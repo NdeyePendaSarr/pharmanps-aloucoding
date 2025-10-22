@@ -1,0 +1,240 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ medication.name }} - PharmaNPS-Alou{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto fade-in">
+    <!-- En-tête -->
+    <div class="mb-8">
+        <a href="{% url 'medication_list' %}" class="inline-flex items-center text-blue-600 hover:text-blue-800 font-bold mb-4 bg-blue-50 px-4 py-2 rounded-xl transition">
+            <i class="fas fa-arrow-left mr-2"></i>Retour à la liste
+        </a>
+    </div>
+
+    <!-- Contenu principal -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Colonne gauche - Info + Image -->
+        <div class="lg:col-span-2 space-y-6">
+            
+            <!-- Card principale avec image -->
+            <div class="bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100">
+                <div class="relative h-96 bg-gradient-to-br 
+                    {% if medication.category.name == 'Anti-asthmatiques' %}from-red-100 to-pink-200
+                    {% elif medication.category.name == 'Antibiotiques' %}from-green-100 to-emerald-200
+                    {% elif medication.category.name == 'Antalgiques' %}from-blue-100 to-cyan-200
+                    {% elif medication.category.name == 'Vitamines' %}from-yellow-100 to-orange-200
+                    {% else %}from-gray-100 to-slate-200
+                    {% endif %}">
+                    
+                    {% if medication.image %}
+                    <img src="{{ medication.image.url }}" alt="{{ medication.name }}" class="w-full h-full object-contain p-8">
+                    {% else %}
+                    <div class="w-full h-full flex flex-col items-center justify-center">
+                        <i class="fas 
+                            {% if medication.form == 'inhalateur' %}fa-lungs
+                            {% elif medication.form == 'sirop' %}fa-prescription-bottle
+                            {% elif medication.form == 'injection' %}fa-syringe
+                            {% else %}fa-pills
+                            {% endif %}
+                            text-9xl mb-4 text-gray-400"></i>
+                        <span class="text-2xl font-bold text-gray-600">{{ medication.category.name }}</span>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Badges absolus -->
+                    <div class="absolute top-6 left-6 flex flex-col gap-3">
+                        {% if medication.requires_prescription %}
+                        <span class="bg-red-500 text-white px-4 py-2 rounded-full text-sm font-bold shadow-xl">
+                            <i class="fas fa-file-prescription mr-2"></i>Prescription requise
+                        </span>
+                        {% endif %}
+                        {% if medication.is_expired %}
+                        <span class="bg-red-600 text-white px-4 py-2 rounded-full text-sm font-bold shadow-xl animate-pulse">
+                            <i class="fas fa-ban mr-2"></i>Médicament périmé
+                        </span>
+                        {% elif medication.is_expiring_soon %}
+                        <span class="bg-yellow-500 text-white px-4 py-2 rounded-full text-sm font-bold shadow-xl">
+                            <i class="fas fa-clock mr-2"></i>Expire bientôt
+                        </span>
+                        {% endif %}
+                        {% if medication.is_low_stock %}
+                        <span class="bg-orange-500 text-white px-4 py-2 rounded-full text-sm font-bold shadow-xl animate-pulse">
+                            <i class="fas fa-exclamation-triangle mr-2"></i>Stock faible
+                        </span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="p-8">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <span class="bg-purple-100 text-purple-800 px-4 py-2 rounded-full text-sm font-bold">
+                                {{ medication.category.name }}
+                            </span>
+                            <h1 class="text-4xl font-extrabold text-gray-900 mt-4 mb-2">{{ medication.name }}</h1>
+                            <p class="text-xl text-gray-600">{{ medication.dci }}</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-6 mb-6">
+                        <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-6">
+                            <p class="text-sm text-blue-600 mb-2 font-semibold">Code-barres</p>
+                            <p class="text-2xl font-bold text-blue-900">{{ medication.barcode }}</p>
+                        </div>
+                        <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl p-6">
+                            <p class="text-sm text-purple-600 mb-2 font-semibold">Emplacement</p>
+                            <p class="text-xl font-bold text-purple-900">{{ medication.location|default:"Non spécifié" }}</p>
+                        </div>
+                        <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-6">
+                            <p class="text-sm text-green-600 mb-2 font-semibold">Forme</p>
+                            <p class="text-xl font-bold text-green-900">{{ medication.form }}</p>
+                        </div>
+                        <div class="bg-gradient-to-br from-orange-50 to-orange-100 rounded-2xl p-6">
+                            <p class="text-sm text-orange-600 mb-2 font-semibold">Dosage</p>
+                            <p class="text-xl font-bold text-orange-900">{{ medication.dosage }}</p>
+                        </div>
+                    </div>
+
+                    {% if medication.description %}
+                    <div class="bg-gray-50 rounded-2xl p-6">
+                        <p class="text-sm font-bold text-gray-700 mb-3">
+                            <i class="fas fa-info-circle mr-2 text-blue-500"></i>Description
+                        </p>
+                        <p class="text-gray-700 leading-relaxed">{{ medication.description }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Prix et marges -->
+            <div class="bg-white rounded-3xl shadow-2xl p-8 border border-gray-100">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6">
+                    <i class="fas fa-money-bill-wave text-green-600 mr-3"></i>
+                    Prix et marges
+                </h2>
+                
+                <div class="grid grid-cols-3 gap-6">
+                    <div class="text-center bg-gradient-to-br from-red-50 to-red-100 rounded-2xl p-6">
+                        <p class="text-sm text-red-600 mb-2 font-semibold">Prix d'achat</p>
+                        <p class="text-4xl font-extrabold text-red-900">{{ medication.purchase_price|floatformat:0 }}</p>
+                        <p class="text-sm text-red-700">FCFA</p>
+                    </div>
+                    <div class="text-center bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-6">
+                        <p class="text-sm text-green-600 mb-2 font-semibold">Prix de vente</p>
+                        <p class="text-4xl font-extrabold text-green-900">{{ medication.selling_price|floatformat:0 }}</p>
+                        <p class="text-sm text-green-700">FCFA</p>
+                    </div>
+                    <div class="text-center bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-6">
+                        <p class="text-sm text-blue-600 mb-2 font-semibold">Marge</p>
+                        <p class="text-4xl font-extrabold text-blue-900">{{ medication.profit_margin|floatformat:0 }}</p>
+                        <p class="text-sm text-blue-700">{{ medication.profit_percentage|floatformat:1 }}%</p>
+                    </div>
+                </div>
+
+                <div class="mt-6 pt-6 border-t border-gray-200 text-center">
+                    <p class="text-sm text-gray-600 mb-2">Valeur totale du stock</p>
+                    <p class="text-5xl font-extrabold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                        {{ medication.stock_value|floatformat:0 }} FCFA
+                    </p>
+                </div>
+            </div>
+
+            <!-- Historique des mouvements -->
+            <div class="bg-white rounded-3xl shadow-2xl p-8 border border-gray-100">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6">
+                    <i class="fas fa-history text-orange-600 mr-3"></i>
+                    Derniers mouvements de stock
+                </h2>
+                
+                {% if movements %}
+                <div class="space-y-4">
+                    {% for movement in movements %}
+                    <div class="flex items-center justify-between p-5 {% if movement.movement_type == 'entree' %}bg-green-50{% elif movement.movement_type == 'sortie' %}bg-blue-50{% else %}bg-red-50{% endif %} rounded-2xl border-2 {% if movement.movement_type == 'entree' %}border-green-200{% elif movement.movement_type == 'sortie' %}border-blue-200{% else %}border-red-200{% endif %}">
+                        <div class="flex items-center gap-4">
+                            <div class="{% if movement.movement_type == 'entree' %}bg-green-500{% elif movement.movement_type == 'sortie' %}bg-blue-500{% else %}bg-red-500{% endif %} w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg">
+                                <i class="fas fa-{% if movement.movement_type == 'entree' %}arrow-down{% elif movement.movement_type == 'sortie' %}arrow-up{% else %}exclamation{% endif %} text-white text-2xl"></i>
+                            </div>
+                            <div>
+                                <p class="font-bold text-gray-900 text-lg">{{ movement.get_movement_type_display }}</p>
+                                <p class="text-sm text-gray-600">{{ movement.created_at|date:"d/m/Y H:i" }} - {{ movement.created_by.username }}</p>
+                            </div>
+                        </div>
+                        <p class="text-3xl font-bold {% if movement.movement_type == 'entree' %}text-green-600{% else %}text-red-600{% endif %}">
+                            {% if movement.movement_type == 'entree' %}+{% else %}-{% endif %}{{ movement.quantity }}
+                        </p>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-12">
+                    <i class="fas fa-box-open text-gray-300 text-6xl mb-4"></i>
+                    <p class="text-gray-500 text-lg">Aucun mouvement enregistré</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Colonne droite - Actions et Stats -->
+        <div class="space-y-6">
+            
+            <!-- Stock -->
+            <div class="bg-gradient-to-br from-blue-600 to-purple-600 rounded-3xl shadow-2xl p-8 text-white sticky top-24">
+                <h3 class="text-xl font-bold mb-6">
+                    <i class="fas fa-box mr-2"></i>État du stock
+                </h3>
+                
+                <div class="text-center mb-8">
+                    <p class="text-7xl font-extrabold mb-2">{{ medication.quantity }}</p>
+                    <p class="text-blue-100 text-lg">unités disponibles</p>
+                </div>
+
+                <div class="space-y-4 mb-6">
+                    <div class="bg-white bg-opacity-20 backdrop-blur-lg rounded-2xl p-4 border border-white border-opacity-30">
+                        <div class="flex justify-between items-center">
+                            <span class="text-blue-100">Stock minimum :</span>
+                            <span class="font-bold text-xl">{{ medication.min_quantity }}</span>
+                        </div>
+                    </div>
+                    
+                    {% if medication.is_low_stock %}
+                    <div class="bg-red-500 rounded-2xl p-4 animate-pulse shadow-xl">
+                        <p class="font-bold flex items-center">
+                            <i class="fas fa-exclamation-triangle mr-2 text-xl"></i>
+                            Attention : Stock faible !
+                        </p>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="bg-white bg-opacity-20 backdrop-blur-lg rounded-2xl p-4 mb-6 border border-white border-opacity-30">
+                    <p class="text-blue-100 text-sm mb-2">Date de péremption</p>
+                    <p class="text-2xl font-bold">{{ medication.expiry_date|date:"d/m/Y" }}</p>
+                    {% if medication.is_expired %}
+                    <span class="inline-block mt-2 bg-red-500 px-3 py-1 rounded-full text-sm font-bold">
+                        <i class="fas fa-ban mr-1"></i>Périmé
+                    </span>
+                    {% elif medication.is_expiring_soon %}
+                    <span class="inline-block mt-2 bg-yellow-500 px-3 py-1 rounded-full text-sm font-bold">
+                        <i class="fas fa-clock mr-1"></i>Expire bientôt
+                    </span>
+                    {% endif %}
+                </div>
+
+                <!-- Actions -->
+                <div class="space-y-3">
+                    <a href="{% url 'stock_movement_create' medication.pk %}" class="block w-full bg-white hover:bg-gray-100 text-blue-600 px-6 py-4 rounded-2xl font-bold text-center transition-all transform hover:scale-105 shadow-lg">
+                        <i class="fas fa-exchange-alt mr-2"></i>Mouvement stock
+                    </a>
+                    <a href="{% url 'medication_update' medication.pk %}" class="block w-full bg-green-500 hover:bg-green-600 text-white px-6 py-4 rounded-2xl font-bold text-center transition-all transform hover:scale-105 shadow-lg">
+                        <i class="fas fa-edit mr-2"></i>Modifier
+                    </a>
+                    <a href="{% url 'medication_delete' medication.pk %}" class="block w-full bg-red-500 hover:bg-red-600 text-white px-6 py-4 rounded-2xl font-bold text-center transition-all transform hover:scale-105 shadow-lg">
+                        <i class="fas fa-trash mr-2"></i>Supprimer
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

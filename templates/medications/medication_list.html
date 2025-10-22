@@ -1,0 +1,229 @@
+{% extends 'base.html' %}
+
+{% block title %}Médicaments - PharmaNPS-Alou{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <!-- En-tête avec gradient moderne -->
+    <div class="mb-8 relative overflow-hidden rounded-3xl bg-gradient-to-br from-green-600 via-emerald-600 to-teal-600 p-8 shadow-2xl">
+        <div class="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-0 left-0 w-96 h-96 bg-teal-400 opacity-10 rounded-full blur-3xl"></div>
+        
+        <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <h1 class="text-4xl font-extrabold text-white mb-3">
+                    <i class="fas fa-pills mr-3"></i>
+                    Gestion des Médicaments
+                </h1>
+                <p class="text-green-100 text-lg">Gérez votre stock de médicaments</p>
+            </div>
+            <div class="flex gap-3">
+                <a href="{% url 'category_list' %}" class="bg-white bg-opacity-20 backdrop-blur-lg hover:bg-opacity-30 text-white px-6 py-3 rounded-2xl font-bold transition-all transform hover:scale-105 shadow-lg border border-white border-opacity-30">
+                    <i class="fas fa-tags mr-2"></i>Catégories
+                </a>
+                <a href="{% url 'medication_create' %}" class="bg-white hover:bg-gray-100 text-green-600 px-6 py-3 rounded-2xl font-bold transition-all transform hover:scale-105 shadow-lg">
+                    <i class="fas fa-plus mr-2"></i>Nouveau
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Barre de recherche et filtres moderne -->
+    <div class="bg-white bg-opacity-90 backdrop-blur-xl rounded-3xl shadow-xl p-6 mb-8 border border-gray-100">
+        <form method="GET" class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <!-- Recherche -->
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-bold text-gray-700 mb-2">
+                        <i class="fas fa-search mr-2 text-blue-500"></i>Rechercher
+                    </label>
+                    <input 
+                        type="text" 
+                        name="search" 
+                        value="{{ search }}"
+                        placeholder="🔍 Nom, DCI, code-barres..." 
+                        class="w-full px-4 py-3 border-2 border-gray-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all"
+                    >
+                </div>
+
+                <!-- Catégorie -->
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">
+                        <i class="fas fa-tags mr-2 text-purple-500"></i>Catégorie
+                    </label>
+                    <select 
+                        name="category" 
+                        class="w-full px-4 py-3 border-2 border-gray-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-purple-200 focus:border-purple-500 transition-all"
+                    >
+                        <option value="">Toutes</option>
+                        {% for cat in categories %}
+                        <option value="{{ cat.id }}" {% if category_filter == cat.id|stringformat:"s" %}selected{% endif %}>
+                            {{ cat.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Stock -->
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">
+                        <i class="fas fa-box mr-2 text-orange-500"></i>État du stock
+                    </label>
+                    <select 
+                        name="stock" 
+                        class="w-full px-4 py-3 border-2 border-gray-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-orange-200 focus:border-orange-500 transition-all"
+                    >
+                        <option value="">Tous</option>
+                        <option value="low" {% if stock_filter == 'low' %}selected{% endif %}>Stock faible</option>
+                        <option value="expiring" {% if stock_filter == 'expiring' %}selected{% endif %}>Expire bientôt</option>
+                        <option value="expired" {% if stock_filter == 'expired' %}selected{% endif %}>Périmés</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="flex gap-3">
+                <button 
+                    type="submit" 
+                    class="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 rounded-2xl font-bold transition-all transform hover:scale-105 shadow-lg"
+                >
+                    <i class="fas fa-filter mr-2"></i>Filtrer
+                </button>
+                <a 
+                    href="{% url 'medication_list' %}" 
+                    class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-8 py-3 rounded-2xl font-bold transition-all shadow-lg"
+                >
+                    <i class="fas fa-times mr-2"></i>Réinitialiser
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Liste des médicaments en cards -->
+    {% if medications %}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {% for med in medications %}
+        <div class="group bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden border border-gray-100">
+            <!-- Image -->
+            <div class="relative h-48 overflow-hidden">
+                {% if med.image %}
+                <img src="{{ med.image.url }}" alt="{{ med.name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                {% else %}
+                <div class="w-full h-full bg-gradient-to-br 
+                    {% if med.category.name == 'Anti-asthmatiques' %}from-red-100 to-pink-200
+                    {% elif med.category.name == 'Antibiotiques' %}from-green-100 to-emerald-200
+                    {% elif med.category.name == 'Antalgiques' %}from-blue-100 to-cyan-200
+                    {% elif med.category.name == 'Vitamines' %}from-yellow-100 to-orange-200
+                    {% elif med.category.name == 'Antipaludiques' %}from-purple-100 to-violet-200
+                    {% else %}from-gray-100 to-slate-200
+                    {% endif %}
+                    flex flex-col items-center justify-center group-hover:scale-110 transition-transform">
+                    <i class="fas 
+                        {% if med.form == 'inhalateur' %}fa-lungs
+                        {% elif med.form == 'sirop' %}fa-prescription-bottle
+                        {% elif med.form == 'injection' %}fa-syringe
+                        {% elif med.form == 'gelule' %}fa-capsules
+                        {% elif med.form == 'comprime' %}fa-tablets
+                        {% else %}fa-pills
+                        {% endif %}
+                        text-6xl mb-3
+                        {% if med.category.name == 'Anti-asthmatiques' %}text-red-600
+                        {% elif med.category.name == 'Antibiotiques' %}text-green-600
+                        {% elif med.category.name == 'Antalgiques' %}text-blue-600
+                        {% elif med.category.name == 'Vitamines' %}text-yellow-600
+                        {% elif med.category.name == 'Antipaludiques' %}text-purple-600
+                        {% else %}text-gray-600
+                        {% endif %}"></i>
+                    <span class="text-sm font-bold text-gray-700">{{ med.category.name }}</span>
+                </div>
+                {% endif %}
+                
+                <!-- Badges -->
+                <div class="absolute top-3 left-3 flex flex-col gap-2">
+                    {% if med.requires_prescription %}
+                    <span class="bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
+                        <i class="fas fa-file-prescription mr-1"></i>Prescription
+                    </span>
+                    {% endif %}
+                    {% if med.is_low_stock %}
+                    <span class="bg-orange-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg animate-pulse">
+                        <i class="fas fa-exclamation-triangle mr-1"></i>Stock faible
+                    </span>
+                    {% endif %}
+                    {% if med.is_expired %}
+                    <span class="bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
+                        <i class="fas fa-ban mr-1"></i>Périmé
+                    </span>
+                    {% elif med.is_expiring_soon %}
+                    <span class="bg-yellow-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
+                        <i class="fas fa-clock mr-1"></i>Expire bientôt
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Contenu -->
+            <div class="p-6">
+                <!-- Catégorie -->
+                <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-xs font-bold">
+                    {{ med.category.name|default:"N/A" }}
+                </span>
+
+                <!-- Nom -->
+                <h3 class="text-xl font-bold text-gray-900 mt-3 mb-2 group-hover:text-blue-600 transition">
+                    {{ med.name }}
+                </h3>
+                <p class="text-sm text-gray-600 mb-1">{{ med.dci }}</p>
+                <p class="text-xs text-gray-500 mb-4">{{ med.form }} - {{ med.dosage }}</p>
+
+                <!-- Prix et stock -->
+                <div class="flex justify-between items-center mb-4 pb-4 border-b border-gray-100">
+                    <div>
+                        <p class="text-2xl font-bold text-green-600">{{ med.selling_price|floatformat:0 }}</p>
+                        <p class="text-xs text-gray-500">FCFA</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-2xl font-bold {% if med.is_low_stock %}text-red-600{% else %}text-gray-900{% endif %}">
+                            {{ med.quantity }}
+                        </p>
+                        <p class="text-xs text-gray-500">en stock</p>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="flex gap-2">
+                    <a href="{% url 'medication_detail' med.pk %}" class="flex-1 bg-blue-100 hover:bg-blue-200 text-blue-700 px-4 py-3 rounded-xl font-bold text-center transition-all transform hover:scale-105" title="Détails">
+                        <i class="fas fa-eye mr-2"></i>Voir
+                    </a>
+                    <a href="{% url 'medication_update' med.pk %}" class="bg-green-100 hover:bg-green-200 text-green-700 px-4 py-3 rounded-xl font-bold transition-all transform hover:scale-105" title="Modifier">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <a href="{% url 'medication_delete' med.pk %}" class="bg-red-100 hover:bg-red-200 text-red-700 px-4 py-3 rounded-xl font-bold transition-all transform hover:scale-105" title="Supprimer">
+                        <i class="fas fa-trash"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="bg-white rounded-3xl shadow-xl p-16 text-center">
+        <i class="fas fa-pills text-gray-300 text-8xl mb-6"></i>
+        <p class="text-gray-500 text-xl mb-6">Aucun médicament trouvé</p>
+        <a href="{% url 'medication_create' %}" class="inline-block bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-8 py-4 rounded-2xl font-bold transition-all transform hover:scale-105 shadow-lg">
+            <i class="fas fa-plus mr-2"></i>Ajouter le premier médicament
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+    }
+    
+    .group:hover i {
+        animation: float 2s ease-in-out infinite;
+    }
+</style>
+{% endblock %}

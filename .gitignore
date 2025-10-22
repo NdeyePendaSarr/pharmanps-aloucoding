@@ -1,0 +1,49 @@
+# Python
+*.py[cod]
+*.pyc
+__pycache__/
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+*$py.class
+
+# Django
+*.log
+db.sqlite3
+db.sqlite3-journal
+media/
+staticfiles/
+
+# Environnement
+venv/
+env/
+ENV/
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Node modules (si vous utilisez npm)
+node_modules/
+
+# Tailwind
+tailwindcss.exe
+tailwindcss-linux-x64
+static/css/output.css
+
+# Render
+.render/
+
+# Autres
+*.bak
+*.tmp

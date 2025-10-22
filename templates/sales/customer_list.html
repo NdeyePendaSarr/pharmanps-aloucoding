@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+
+{% block title %}Clients - PharmaNPS-Alou{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <!-- En-tête avec gradient -->
+    <div class="mb-8 relative overflow-hidden rounded-3xl bg-gradient-to-br from-purple-600 via-pink-600 to-rose-600 p-8 shadow-2xl">
+        <div class="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-0 left-0 w-96 h-96 bg-pink-400 opacity-10 rounded-full blur-3xl"></div>
+        
+        <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <h1 class="text-4xl font-extrabold text-white mb-3">
+                    <i class="fas fa-users mr-3"></i>
+                    Gestion des Clients
+                </h1>
+                <p class="text-purple-100 text-xl">{{ customers.count }} client(s) enregistré(s)</p>
+            </div>
+            <a href="{% url 'customer_create' %}" class="bg-white hover:bg-gray-100 text-purple-600 px-8 py-4 rounded-2xl font-bold transition-all transform hover:scale-105 shadow-lg">
+                <i class="fas fa-user-plus mr-2"></i>Nouveau client
+            </a>
+        </div>
+    </div>
+
+    <!-- Barre de recherche -->
+    <div class="bg-white bg-opacity-90 backdrop-blur-xl rounded-3xl shadow-xl p-6 mb-8 border border-gray-100">
+        <form method="GET" class="flex gap-4">
+            <div class="flex-1">
+                <input 
+                    type="text" 
+                    name="search" 
+                    value="{{ search }}"
+                    placeholder="🔍 Rechercher par nom, prénom, téléphone..."
+                    class="w-full px-4 py-3 border-2 border-gray-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-purple-200 focus:border-purple-500 transition-all"
+                >
+            </div>
+            <button type="submit" class="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 py-3 rounded-2xl font-bold transition-all transform hover:scale-105 shadow-lg">
+                <i class="fas fa-search mr-2"></i>Rechercher
+            </button>
+        </form>
+    </div>
+
+    <!-- Liste des clients -->
+    {% if customers %}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for customer in customers %}
+        <div class="group bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden border border-gray-100">
+            <!-- En-tête avec avatar -->
+            <div class="relative h-32 bg-gradient-to-br 
+                {% if customer.customer_type == 'particulier' %}from-blue-500 to-blue-600
+                {% elif customer.customer_type == 'entreprise' %}from-green-500 to-emerald-600
+                {% else %}from-orange-500 to-amber-600
+                {% endif %}">
+                <div class="absolute -bottom-12 left-1/2 transform -translate-x-1/2">
+                    <div class="bg-white rounded-full w-24 h-24 flex items-center justify-center shadow-2xl border-4 border-white group-hover:scale-110 transition-transform">
+                        <i class="fas fa-user text-5xl 
+                            {% if customer.customer_type == 'particulier' %}text-blue-600
+                            {% elif customer.customer_type == 'entreprise' %}text-green-600
+                            {% else %}text-orange-600
+                            {% endif %}"></i>
+                    </div>
+                </div>
+                <div class="absolute top-4 right-4">
+                    {% if customer.customer_type == 'particulier' %}
+                    <span class="bg-white bg-opacity-20 backdrop-blur-lg text-white px-4 py-2 rounded-xl text-xs font-bold border border-white border-opacity-30">
+                    {% elif customer.customer_type == 'entreprise' %}
+                    <span class="bg-white bg-opacity-20 backdrop-blur-lg text-white px-4 py-2 rounded-xl text-xs font-bold border border-white border-opacity-30">
+                    {% else %}
+                    <span class="bg-white bg-opacity-20 backdrop-blur-lg text-white px-4 py-2 rounded-xl text-xs font-bold border border-white border-opacity-30">
+                    {% endif %}
+                        <i class="fas fa-{% if customer.customer_type == 'particulier' %}user{% elif customer.customer_type == 'entreprise' %}building{% else %}shield-alt{% endif %} mr-1"></i>
+                        {{ customer.get_customer_type_display }}
+                    </span>
+                </div>
+            </div>
+
+            <!-- Contenu -->
+            <div class="p-6 pt-16">
+                <!-- Nom -->
+                <h3 class="text-2xl font-bold text-gray-900 text-center mb-2 group-hover:text-purple-600 transition">
+                    {{ customer.full_name }}
+                </h3>
+
+                <!-- Infos contact -->
+                <div class="space-y-2 mb-4 pb-4 border-b border-gray-100">
+                    <p class="text-gray-600 flex items-center text-sm">
+                        <i class="fas fa-phone text-blue-500 w-6 mr-2"></i>
+                        {{ customer.phone }}
+                    </p>
+                    {% if customer.email %}
+                    <p class="text-gray-600 flex items-center text-sm">
+                        <i class="fas fa-envelope text-green-500 w-6 mr-2"></i>
+                        {{ customer.email }}
+                    </p>
+                    {% endif %}
+                    {% if customer.medical_conditions %}
+                    <div class="bg-red-50 border-l-4 border-red-500 p-3 rounded-lg mt-3">
+                        <p class="text-red-700 flex items-start text-sm">
+                            <i class="fas fa-heartbeat text-red-500 w-6 mr-2 mt-1"></i>
+                            <span class="flex-1">{{ customer.medical_conditions|truncatewords:8 }}</span>
+                        </p>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Stats -->
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div class="text-center bg-purple-50 rounded-2xl p-4">
+                        <p class="text-xs text-gray-500 mb-1">Points fidélité</p>
+                        <p class="text-2xl font-bold text-purple-600">{{ customer.loyalty_points }}</p>
+                    </div>
+                    <div class="text-center bg-green-50 rounded-2xl p-4">
+                        <p class="text-xs text-gray-500 mb-1">Crédit dispo</p>
+                        <p class="text-lg font-bold text-green-600">{{ customer.available_credit|floatformat:0 }}</p>
+                    </div>
+                </div>
+
+                <!-- Action -->
+                <a href="{% url 'customer_detail' customer.pk %}" class="block w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-4 py-3 rounded-2xl font-bold text-center transition-all transform hover:scale-105 shadow-lg">
+                    <i class="fas fa-eye mr-2"></i>Voir le profil
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="bg-white rounded-3xl shadow-xl p-16 text-center">
+        <i class="fas fa-users text-gray-300 text-8xl mb-6"></i>
+        <p class="text-gray-500 text-xl mb-6">Aucun client enregistré</p>
+        <a href="{% url 'customer_create' %}" class="inline-block bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 py-4 rounded-2xl font-bold transition-all transform hover:scale-105 shadow-lg">
+            <i class="fas fa-user-plus mr-2"></i>Ajouter le premier client
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    @keyframes float-gentle {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-5px); }
+    }
+    
+    .group:hover .fa-user {
+        animation: float-gentle 2s ease-in-out infinite;
+    }
+</style>
+{% endblock %}

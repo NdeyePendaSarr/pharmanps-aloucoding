@@ -1,0 +1,238 @@
+{% extends 'base.html' %}
+
+{% block title %}Tableau de bord - PharmaNPS-Alou{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <!-- En-tête avec effet gradient -->
+    <div class="mb-8 relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600 via-blue-700 to-purple-700 p-8 shadow-2xl">
+        <div class="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-0 left-0 w-96 h-96 bg-purple-400 opacity-10 rounded-full blur-3xl"></div>
+        
+        <div class="relative z-10">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-4xl font-extrabold text-white mb-3">
+                        Bienvenue, {{ user.username }} ! 👋
+                    </h1>
+                    <p class="text-blue-100 text-lg">Tableau de bord - PharmaNPS-Alou Manager</p>
+                    <p class="text-blue-200 text-sm mt-2">
+                        <i class="fas fa-calendar-alt mr-2"></i>{{ "now"|date:"l d F Y" }}
+                    </p>
+                </div>
+                <div class="hidden md:block">
+                    <div class="bg-white bg-opacity-20 backdrop-blur-lg rounded-2xl p-6 border border-white border-opacity-30">
+                        <p class="text-white text-sm mb-2">CA du jour</p>
+                        <p class="text-4xl font-bold text-white">{{ total_sales_amount|floatformat:0 }}</p>
+                        <p class="text-blue-100 text-xs">FCFA</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cartes de statistiques avec animations -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        
+        <!-- Total médicaments -->
+        <div class="group bg-white rounded-2xl shadow-lg p-6 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer border-2 border-transparent hover:border-blue-500">
+            <div class="flex items-center justify-between mb-4">
+                <div class="bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl p-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <i class="fas fa-pills text-white text-3xl"></i>
+                </div>
+                <div class="text-right">
+                    <p class="text-sm font-semibold text-gray-500 uppercase tracking-wide">Médicaments</p>
+                    <p class="text-4xl font-extrabold text-gray-900 mt-1">{{ total_medications }}</p>
+                </div>
+            </div>
+            <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+                <span class="text-xs text-green-600 font-semibold flex items-center">
+                    <i class="fas fa-arrow-up mr-1"></i> En stock
+                </span>
+                <a href="{% url 'medication_list' %}" class="text-sm text-blue-600 hover:text-blue-800 font-semibold group-hover:translate-x-1 transition-transform">
+                    Voir <i class="fas fa-arrow-right ml-1"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Total ventes -->
+        <div class="group bg-white rounded-2xl shadow-lg p-6 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer border-2 border-transparent hover:border-green-500">
+            <div class="flex items-center justify-between mb-4">
+                <div class="bg-gradient-to-br from-green-400 to-emerald-600 rounded-xl p-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <i class="fas fa-shopping-cart text-white text-3xl"></i>
+                </div>
+                <div class="text-right">
+                    <p class="text-sm font-semibold text-gray-500 uppercase tracking-wide">Ventes</p>
+                    <p class="text-4xl font-extrabold text-gray-900 mt-1">{{ total_sales }}</p>
+                </div>
+            </div>
+            <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+                <span class="text-xs text-green-600 font-semibold">
+                    {{ total_sales_amount|floatformat:0 }} FCFA
+                </span>
+                <a href="{% url 'sale_list' %}" class="text-sm text-green-600 hover:text-green-800 font-semibold group-hover:translate-x-1 transition-transform">
+                    Détails <i class="fas fa-arrow-right ml-1"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Total clients -->
+        <div class="group bg-white rounded-2xl shadow-lg p-6 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer border-2 border-transparent hover:border-purple-500">
+            <div class="flex items-center justify-between mb-4">
+                <div class="bg-gradient-to-br from-purple-400 to-purple-600 rounded-xl p-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <i class="fas fa-users text-white text-3xl"></i>
+                </div>
+                <div class="text-right">
+                    <p class="text-sm font-semibold text-gray-500 uppercase tracking-wide">Clients</p>
+                    <p class="text-4xl font-extrabold text-gray-900 mt-1">{{ total_customers }}</p>
+                </div>
+            </div>
+            <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+                <span class="text-xs text-purple-600 font-semibold flex items-center">
+                    <i class="fas fa-heart mr-1"></i> Fidèles
+                </span>
+                <a href="{% url 'customer_list' %}" class="text-sm text-purple-600 hover:text-purple-800 font-semibold group-hover:translate-x-1 transition-transform">
+                    Gérer <i class="fas fa-arrow-right ml-1"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Alertes stock -->
+        <div class="group bg-white rounded-2xl shadow-lg p-6 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer border-2 border-transparent hover:border-red-500">
+            <div class="flex items-center justify-between mb-4">
+                <div class="bg-gradient-to-br from-red-400 to-red-600 rounded-xl p-4 shadow-lg group-hover:scale-110 group-hover:rotate-12 transition-all duration-300">
+                    <i class="fas fa-exclamation-triangle text-white text-3xl"></i>
+                </div>
+                <div class="text-right">
+                    <p class="text-sm font-semibold text-gray-500 uppercase tracking-wide">Alertes</p>
+                    <p class="text-4xl font-extrabold text-red-600 mt-1 animate-pulse">{{ low_stock_count }}</p>
+                </div>
+            </div>
+            <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+                <span class="text-xs text-red-600 font-semibold flex items-center">
+                    <i class="fas fa-circle text-red-500 text-xs mr-1 animate-ping"></i> Stock faible
+                </span>
+                <a href="{% url 'medication_list' %}?stock=low" class="text-sm text-red-600 hover:text-red-800 font-semibold group-hover:translate-x-1 transition-transform">
+                    Voir <i class="fas fa-arrow-right ml-1"></i>
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Actions rapides avec design moderne -->
+    <div class="bg-white rounded-2xl shadow-xl p-8 mb-8 border border-gray-100">
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-2xl font-bold text-gray-900">
+                <i class="fas fa-bolt text-yellow-500 mr-3"></i>
+                Actions rapides
+            </h2>
+            <span class="text-sm text-gray-500">Accès direct</span>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+            <a href="{% url 'pos' %}" class="group relative overflow-hidden bg-gradient-to-br from-blue-50 to-blue-100 border-2 border-blue-200 rounded-2xl p-6 hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-blue-400 rounded-full blur-3xl opacity-20 group-hover:opacity-40 transition-opacity"></div>
+                <div class="relative z-10">
+                    <div class="bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl p-4 inline-block mb-4 shadow-lg group-hover:rotate-12 transition-transform">
+                        <i class="fas fa-cash-register text-white text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Nouvelle vente</h3>
+                    <p class="text-sm text-gray-600">Ouvrir la caisse</p>
+                </div>
+            </a>
+
+            <a href="{% url 'medication_create' %}" class="group relative overflow-hidden bg-gradient-to-br from-green-50 to-emerald-100 border-2 border-green-200 rounded-2xl p-6 hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-green-400 rounded-full blur-3xl opacity-20 group-hover:opacity-40 transition-opacity"></div>
+                <div class="relative z-10">
+                    <div class="bg-gradient-to-br from-green-500 to-emerald-700 rounded-xl p-4 inline-block mb-4 shadow-lg group-hover:rotate-12 transition-transform">
+                        <i class="fas fa-pills text-white text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Ajouter médicament</h3>
+                    <p class="text-sm text-gray-600">Nouveau produit</p>
+                </div>
+            </a>
+
+            <a href="{% url 'customer_create' %}" class="group relative overflow-hidden bg-gradient-to-br from-purple-50 to-purple-100 border-2 border-purple-200 rounded-2xl p-6 hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-purple-400 rounded-full blur-3xl opacity-20 group-hover:opacity-40 transition-opacity"></div>
+                <div class="relative z-10">
+                    <div class="bg-gradient-to-br from-purple-500 to-purple-700 rounded-xl p-4 inline-block mb-4 shadow-lg group-hover:rotate-12 transition-transform">
+                        <i class="fas fa-user-plus text-white text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Nouveau client</h3>
+                    <p class="text-sm text-gray-600">Enregistrer un client</p>
+                </div>
+            </a>
+
+        </div>
+    </div>
+
+    <!-- Graphiques (placeholder pour l'instant) -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        
+        <!-- Graphique ventes -->
+        <div class="bg-white rounded-2xl shadow-xl p-6 border border-gray-100">
+            <h3 class="text-xl font-bold text-gray-900 mb-4">
+                <i class="fas fa-chart-line text-blue-600 mr-2"></i>
+                Évolution des ventes
+            </h3>
+            <div class="h-64 flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl">
+                <div class="text-center">
+                    <i class="fas fa-chart-bar text-6xl text-gray-300 mb-4"></i>
+                    <p class="text-gray-500">Graphique interactif disponible prochainement</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Graphique produits -->
+        <div class="bg-white rounded-2xl shadow-xl p-6 border border-gray-100">
+            <h3 class="text-xl font-bold text-gray-900 mb-4">
+                <i class="fas fa-chart-pie text-green-600 mr-2"></i>
+                Produits les plus vendus
+            </h3>
+            <div class="h-64 flex items-center justify-center bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl">
+                <div class="text-center">
+                    <i class="fas fa-chart-pie text-6xl text-gray-300 mb-4"></i>
+                    <p class="text-gray-500">Graphique interactif disponible prochainement</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Message inspirant avec nouveau design -->
+    <div class="relative overflow-hidden bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 rounded-3xl shadow-2xl p-10 text-white">
+        <div class="absolute top-0 right-0 w-96 h-96 bg-white opacity-10 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-0 left-0 w-64 h-64 bg-pink-400 opacity-20 rounded-full blur-3xl"></div>
+        
+        <div class="relative z-10 flex items-center">
+            <div class="bg-white bg-opacity-20 backdrop-blur-lg rounded-2xl p-6 mr-6 border border-white border-opacity-30">
+                <i class="fas fa-heart text-5xl"></i>
+            </div>
+            <div class="flex-1">
+                <h3 class="text-3xl font-extrabold mb-3">Votre santé, notre priorité ! 💊</h3>
+                <p class="text-purple-100 text-lg mb-2">
+                    "De l'asthme à l'entrepreneuriat pharmaceutique - Transformons les défis en opportunités !"
+                </p>
+              
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<style>
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-20px); }
+    }
+    
+    .group:hover .fa-pills,
+    .group:hover .fa-shopping-cart,
+    .group:hover .fa-users,
+    .group:hover .fa-cash-register {
+        animation: float 2s ease-in-out infinite;
+    }
+</style>
+{% endblock %}

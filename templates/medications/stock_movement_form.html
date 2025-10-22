@@ -1,0 +1,283 @@
+{% extends 'base.html' %}
+
+{% block title %}Mouvement de stock - PharmaNPS-Alou{% endblock %}
+
+{% block content %}
+<div class="min-h-screen py-12 px-4 bg-gradient-to-br from-orange-50 via-white to-amber-50">
+    <div class="max-w-4xl mx-auto">
+        <!-- En-tête élégant -->
+        <div class="mb-10 fade-in">
+            <a href="{% url 'medication_detail' medication.pk %}" 
+               class="group inline-flex items-center text-orange-600 hover:text-orange-700 font-semibold mb-6 transition-all duration-300 hover:translate-x-[-4px]">
+                <i class="fas fa-arrow-left mr-2 transition-transform group-hover:translate-x-[-4px]"></i>
+                Retour au médicament
+            </a>
+            
+            <div class="flex items-center gap-4 mb-4">
+                <div class="bg-gradient-to-br from-orange-500 to-orange-700 p-5 rounded-2xl shadow-lg">
+                    <i class="fas fa-exchange-alt text-white text-3xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-4xl font-bold text-gray-900 mb-1">
+                        Mouvement de stock
+                    </h1>
+                    <p class="text-gray-600 text-lg">
+                        Pour : <strong class="text-orange-600">{{ medication.name }}</strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Colonne principale - Formulaire -->
+            <div class="lg:col-span-2">
+                <!-- Carte d'information du stock actuel -->
+                <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-6 mb-8 text-white shadow-xl fade-in" style="animation-delay: 0.1s;">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-blue-100 text-sm font-semibold uppercase tracking-wide mb-2 flex items-center">
+                                <i class="fas fa-info-circle mr-2"></i>
+                                Stock actuel disponible
+                            </p>
+                            <div class="flex items-baseline gap-3">
+                                <span class="text-6xl font-bold">{{ medication.quantity }}</span>
+                                <span class="text-2xl text-blue-100">unités</span>
+                            </div>
+                        </div>
+                        <div class="bg-white/20 backdrop-blur-sm p-5 rounded-2xl">
+                            <i class="fas fa-box-open text-5xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Formulaire principal -->
+                <form method="POST" class="bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl border border-gray-100 overflow-hidden fade-in" style="animation-delay: 0.2s;">
+                    {% csrf_token %}
+                    
+                    <div class="p-8 space-y-8">
+                        <!-- Type de mouvement -->
+                        <div class="group">
+                            <label class="flex items-center text-sm font-bold text-gray-800 mb-3 uppercase tracking-wide">
+                                <span class="bg-orange-100 text-orange-600 w-10 h-10 rounded-xl flex items-center justify-center mr-3">
+                                    <i class="fas fa-list text-sm"></i>
+                                </span>
+                                Type de mouvement *
+                            </label>
+                            <div class="relative">
+                                <select 
+                                    name="movement_type" 
+                                    required
+                                    class="w-full px-6 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-200 focus:border-orange-500 transition-all duration-300 text-gray-800 font-semibold hover:border-gray-300 appearance-none bg-white cursor-pointer"
+                                >
+                                    <option value="">Sélectionnez un type de mouvement</option>
+                                    {% for value, label in movement_types %}
+                                    <option value="{{ value }}">{{ label }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
+                                    <i class="fas fa-chevron-down text-gray-400"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quantité -->
+                        <div class="group">
+                            <label class="flex items-center text-sm font-bold text-gray-800 mb-3 uppercase tracking-wide">
+                                <span class="bg-orange-100 text-orange-600 w-10 h-10 rounded-xl flex items-center justify-center mr-3">
+                                    <i class="fas fa-hashtag text-sm"></i>
+                                </span>
+                                Quantité *
+                            </label>
+                            <div class="relative">
+                                <input 
+                                    type="number" 
+                                    name="quantity" 
+                                    required
+                                    min="1"
+                                    class="w-full px-6 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-200 focus:border-orange-500 transition-all duration-300 text-gray-800 font-semibold placeholder-gray-400 hover:border-gray-300"
+                                    placeholder="Nombre d'unités à déplacer"
+                                >
+                                <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
+                                    <span class="text-gray-400 font-medium">unités</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Référence -->
+                        <div class="group">
+                            <label class="flex items-center text-sm font-bold text-gray-800 mb-3 uppercase tracking-wide">
+                                <span class="bg-orange-100 text-orange-600 w-10 h-10 rounded-xl flex items-center justify-center mr-3">
+                                    <i class="fas fa-file-invoice text-sm"></i>
+                                </span>
+                                Référence
+                                <span class="ml-2 text-xs text-gray-500 normal-case">(optionnel)</span>
+                            </label>
+                            <div class="relative">
+                                <input 
+                                    type="text" 
+                                    name="reference" 
+                                    class="w-full px-6 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-200 focus:border-orange-500 transition-all duration-300 text-gray-800 font-medium placeholder-gray-400 hover:border-gray-300"
+                                    placeholder="Ex: BON-2025-001, FACT-12345..."
+                                >
+                                <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
+                                    <i class="fas fa-barcode text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Raison -->
+                        <div class="group">
+                            <label class="flex items-center text-sm font-bold text-gray-800 mb-3 uppercase tracking-wide">
+                                <span class="bg-orange-100 text-orange-600 w-10 h-10 rounded-xl flex items-center justify-center mr-3">
+                                    <i class="fas fa-comment-alt text-sm"></i>
+                                </span>
+                                Raison / Justification
+                                <span class="ml-2 text-xs text-gray-500 normal-case">(optionnel)</span>
+                            </label>
+                            <div class="relative">
+                                <textarea 
+                                    name="reason" 
+                                    rows="5"
+                                    class="w-full px-6 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-200 focus:border-orange-500 transition-all duration-300 text-gray-800 font-medium placeholder-gray-400 hover:border-gray-300 resize-none"
+                                    placeholder="Décrivez la raison de ce mouvement de stock : vente, réapprovisionnement, péremption, casse..."
+                                ></textarea>
+                                <div class="absolute top-4 right-4 pointer-events-none">
+                                    <i class="fas fa-pen text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Barre d'actions -->
+                    <div class="bg-gradient-to-r from-gray-50 to-orange-50 px-8 py-6 border-t border-gray-100">
+                        <div class="flex flex-col sm:flex-row justify-end gap-4">
+                            <a href="{% url 'medication_detail' medication.pk %}" 
+                               class="group px-8 py-4 bg-white border-2 border-gray-300 hover:border-gray-400 text-gray-700 rounded-xl font-bold transition-all duration-300 shadow-sm hover:shadow-md text-center">
+                                <i class="fas fa-times mr-2 transition-transform group-hover:rotate-90"></i>
+                                Annuler
+                            </a>
+                            <button type="submit" 
+                                    class="group px-8 py-4 bg-gradient-to-r from-orange-600 via-orange-700 to-orange-800 hover:from-orange-700 hover:via-orange-800 hover:to-orange-900 text-white rounded-xl font-bold transition-all duration-300 transform hover:scale-105 hover:shadow-2xl shadow-orange-300/50 relative overflow-hidden">
+                                <span class="relative z-10 flex items-center justify-center">
+                                    <i class="fas fa-check-circle mr-2 group-hover:scale-110 transition-transform"></i>
+                                    Enregistrer le mouvement
+                                </span>
+                                <div class="absolute inset-0 bg-gradient-to-r from-orange-400 to-orange-600 opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Colonne latérale - Aide et info -->
+            <div class="space-y-6">
+                <!-- Carte d'aide -->
+                <div class="bg-gradient-to-br from-orange-50 to-amber-50 rounded-2xl p-6 border border-orange-200 shadow-lg fade-in" style="animation-delay: 0.3s;">
+                    <div class="flex items-start gap-4 mb-4">
+                        <div class="bg-orange-100 p-3 rounded-xl flex-shrink-0">
+                            <i class="fas fa-lightbulb text-orange-600 text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-gray-900 mb-2">Guide rapide</h3>
+                        </div>
+                    </div>
+                    <ul class="space-y-3 text-sm text-gray-700">
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-orange-500 mt-1 flex-shrink-0"></i>
+                            <span>Sélectionnez le type de mouvement approprié</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-orange-500 mt-1 flex-shrink-0"></i>
+                            <span>Indiquez la quantité exacte déplacée</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-orange-500 mt-1 flex-shrink-0"></i>
+                            <span>Ajoutez une référence pour la traçabilité</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-orange-500 mt-1 flex-shrink-0"></i>
+                            <span>Justifiez le mouvement pour l'historique</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Types de mouvements -->
+                <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 fade-in" style="animation-delay: 0.4s;">
+                    <h3 class="font-bold text-gray-900 mb-4 flex items-center">
+                        <i class="fas fa-info-circle text-blue-500 mr-2"></i>
+                        Types de mouvements
+                    </h3>
+                    <div class="space-y-3 text-sm">
+                        <div class="flex items-start gap-3">
+                            <div class="bg-green-100 text-green-700 px-2 py-1 rounded font-semibold text-xs">IN</div>
+                            <div>
+                                <p class="font-semibold text-gray-900">Entrées</p>
+                                <p class="text-gray-600 text-xs">Réceptions, retours</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <div class="bg-red-100 text-red-700 px-2 py-1 rounded font-semibold text-xs">OUT</div>
+                            <div>
+                                <p class="font-semibold text-gray-900">Sorties</p>
+                                <p class="text-gray-600 text-xs">Ventes, pertes, péremptions</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Alerte stock -->
+                <div class="bg-gradient-to-br from-amber-50 to-yellow-50 rounded-2xl p-6 border-l-4 border-amber-500 shadow-lg fade-in" style="animation-delay: 0.5s;">
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-exclamation-triangle text-amber-600 text-xl mt-1"></i>
+                        <div>
+                            <h4 class="font-bold text-gray-900 mb-1">Attention</h4>
+                            <p class="text-sm text-gray-700 leading-relaxed">
+                                Vérifiez bien les quantités avant de valider. Les mouvements sont tracés et modifient le stock.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .fade-in {
+        animation: fadeInUp 0.6s ease-out backwards;
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Animation au focus des inputs */
+    input:focus, textarea:focus, select:focus {
+        animation: pulse 0.3s ease-out;
+    }
+
+    @keyframes pulse {
+        0% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.01);
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
+
+    /* Style personnalisé pour le select */
+    select option {
+        padding: 12px;
+    }
+</style>
+{% endblock %}

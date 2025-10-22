@@ -1,0 +1,225 @@
+{% extends 'base.html' %}
+
+{% block title %}Supprimer {{ medication.name }} - PharmaNPS-Alou{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center py-12 px-4 bg-gradient-to-br from-red-50 via-white to-orange-50">
+    <div class="max-w-2xl w-full">
+        <!-- Carte principale avec effet glassmorphism -->
+        <div class="bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl overflow-hidden border border-red-100 fade-in">
+            
+            <!-- En-tête avec animation -->
+            <div class="relative bg-gradient-to-br from-red-500 via-red-600 to-red-700 p-8 overflow-hidden">
+                <!-- Formes décoratives animées -->
+                <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32 animate-pulse-slow"></div>
+                <div class="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full -ml-24 -mb-24 animate-pulse-slow" style="animation-delay: 1s;"></div>
+                
+                <div class="relative text-center">
+                    <!-- Icône d'avertissement avec animation -->
+                    <div class="inline-block relative mb-6">
+                        <div class="absolute inset-0 bg-white/30 rounded-full animate-ping"></div>
+                        <div class="relative bg-white rounded-full w-24 h-24 flex items-center justify-center shadow-xl">
+                            <i class="fas fa-exclamation-triangle text-red-600 text-5xl animate-bounce-slow"></i>
+                        </div>
+                    </div>
+                    
+                    <h1 class="text-4xl font-bold text-white mb-3 drop-shadow-lg">
+                        Confirmation requise
+                    </h1>
+                    <p class="text-red-100 text-lg font-medium">
+                        <i class="fas fa-lock mr-2"></i>
+                        Cette action est irréversible
+                    </p>
+                </div>
+            </div>
+
+            <!-- Contenu principal -->
+            <div class="p-10">
+                <!-- Message d'avertissement -->
+                <div class="bg-gradient-to-r from-red-50 to-orange-50 border-l-4 border-red-500 rounded-xl p-6 mb-8">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-red-100 rounded-lg p-3 flex-shrink-0">
+                            <i class="fas fa-info-circle text-red-600 text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-gray-900 mb-2">Attention</h3>
+                            <p class="text-gray-700 leading-relaxed">
+                                Vous êtes sur le point de supprimer définitivement ce médicament de votre inventaire. 
+                                Toutes les données associées seront perdues.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Carte du médicament à supprimer -->
+                <div class="mb-8">
+                    <p class="text-gray-600 font-semibold mb-4 flex items-center">
+                        <span class="bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center mr-3">
+                            <i class="fas fa-pill text-gray-600 text-sm"></i>
+                        </span>
+                        Médicament à supprimer :
+                    </p>
+                    
+                    <div class="relative group">
+                        <!-- Effet de brillance rouge au survol -->
+                        <div class="absolute inset-0 bg-gradient-to-r from-red-400 to-red-600 rounded-2xl opacity-0 group-hover:opacity-10 transition-opacity duration-300 blur-xl"></div>
+                        
+                        <div class="relative bg-gradient-to-br from-white to-gray-50 rounded-2xl p-6 border-3 border-red-300 shadow-lg group-hover:shadow-xl transition-all duration-300">
+                            <!-- Badge de statut -->
+                            <div class="absolute top-4 right-4">
+                                <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide flex items-center gap-2">
+                                    <span class="w-2 h-2 bg-red-600 rounded-full animate-pulse"></span>
+                                    À supprimer
+                                </span>
+                            </div>
+
+                            <div class="space-y-4 pr-32">
+                                <div>
+                                    <p class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-1">Nom du médicament</p>
+                                    <p class="text-2xl font-bold text-gray-900">{{ medication.name }}</p>
+                                </div>
+                                
+                                <div>
+                                    <p class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-1">DCI</p>
+                                    <p class="text-lg text-gray-700">{{ medication.dci }}</p>
+                                </div>
+                                
+                                <div class="flex items-center gap-3 pt-2">
+                                    <div class="bg-gray-100 rounded-lg px-4 py-2 flex items-center gap-2">
+                                        <i class="fas fa-barcode text-gray-600"></i>
+                                        <span class="text-sm font-mono font-semibold text-gray-700">{{ medication.barcode }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Liste des conséquences -->
+                <div class="bg-red-50 rounded-2xl p-6 mb-8 border border-red-200">
+                    <h3 class="font-bold text-gray-900 mb-4 flex items-center">
+                        <i class="fas fa-clipboard-list text-red-600 mr-2"></i>
+                        Conséquences de cette action :
+                    </h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-start gap-3 text-gray-700">
+                            <i class="fas fa-times-circle text-red-500 mt-1"></i>
+                            <span>Le médicament sera retiré de l'inventaire</span>
+                        </li>
+                        <li class="flex items-start gap-3 text-gray-700">
+                            <i class="fas fa-times-circle text-red-500 mt-1"></i>
+                            <span>L'historique associé sera perdu</span>
+                        </li>
+                        <li class="flex items-start gap-3 text-gray-700">
+                            <i class="fas fa-times-circle text-red-500 mt-1"></i>
+                            <span>Cette action ne peut pas être annulée</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Boutons d'action -->
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <!-- Bouton Annuler -->
+                        <a href="{% url 'medication_detail' medication.pk %}" 
+                           class="group flex-1 relative bg-white border-2 border-gray-300 hover:border-gray-400 text-gray-700 px-8 py-4 rounded-xl font-bold text-center transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105 overflow-hidden">
+                            <span class="relative z-10 flex items-center justify-center">
+                                <i class="fas fa-arrow-left mr-3 group-hover:translate-x-[-4px] transition-transform"></i>
+                                Annuler et retourner
+                            </span>
+                        </a>
+                        
+                        <!-- Bouton Supprimer -->
+                        <button type="submit" 
+                                class="group flex-1 relative bg-gradient-to-r from-red-600 via-red-700 to-red-800 hover:from-red-700 hover:via-red-800 hover:to-red-900 text-white px-8 py-4 rounded-xl font-bold transition-all duration-300 shadow-lg hover:shadow-2xl shadow-red-300/50 transform hover:scale-105 overflow-hidden">
+                            <span class="relative z-10 flex items-center justify-center">
+                                <i class="fas fa-trash-alt mr-3 group-hover:scale-110 transition-transform"></i>
+                                Supprimer définitivement
+                            </span>
+                            <div class="absolute inset-0 bg-gradient-to-r from-red-400 to-red-600 opacity-0 group-hover:opacity-30 transition-opacity duration-300"></div>
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Note de sécurité -->
+                <div class="mt-6 text-center">
+                    <p class="text-xs text-gray-500 flex items-center justify-center gap-2">
+                        <i class="fas fa-shield-alt"></i>
+                        Action sécurisée - Confirmation requise
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Message informatif supplémentaire -->
+        <div class="mt-6 text-center fade-in" style="animation-delay: 0.3s;">
+            <p class="text-gray-600 text-sm">
+                <i class="fas fa-question-circle mr-2"></i>
+                Besoin d'aide ? 
+                <a href="#" class="text-blue-600 hover:text-blue-700 font-semibold hover:underline">Contactez le support</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+<style>
+    .fade-in {
+        animation: fadeInUp 0.6s ease-out backwards;
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .animate-pulse-slow {
+        animation: pulse-slow 3s ease-in-out infinite;
+    }
+
+    @keyframes pulse-slow {
+        0%, 100% {
+            transform: scale(1);
+            opacity: 0.5;
+        }
+        50% {
+            transform: scale(1.1);
+            opacity: 0.8;
+        }
+    }
+
+    .animate-bounce-slow {
+        animation: bounce-slow 2s ease-in-out infinite;
+    }
+
+    @keyframes bounce-slow {
+        0%, 100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-10px);
+        }
+    }
+
+    .border-3 {
+        border-width: 3px;
+    }
+
+    /* Effet de tremblement au survol du bouton supprimer */
+    button[type="submit"]:hover {
+        animation: shake 0.5s ease-in-out;
+    }
+
+    @keyframes shake {
+        0%, 100% { transform: scale(1.05) translateX(0); }
+        25% { transform: scale(1.05) translateX(-2px); }
+        75% { transform: scale(1.05) translateX(2px); }
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,532 @@
+{% extends 'base.html' %}
+
+{% block title %}Point de Vente - PharmaNPS-Alou{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 pt-20 pb-8">
+    <div class="max-w-7xl mx-auto px-4 flex gap-4 flex-col lg:flex-row">
+        
+        <!-- Panneau gauche - Produits -->
+        <div class="flex-1 bg-white bg-opacity-80 backdrop-blur-xl rounded-3xl shadow-2xl p-6 border border-white lg:max-h-[85vh] overflow-y-auto">
+            <div class="mb-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-3xl font-extrabold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                        <i class="fas fa-shopping-cart mr-3"></i>
+                        Point de Vente
+                    </h2>
+                    <div class="text-sm text-gray-500">
+                        <i class="fas fa-clock mr-2"></i>{{ "now"|date:"H:i" }}
+                    </div>
+                </div>
+                
+                <!-- Recherche avec design moderne -->
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <i class="fas fa-search text-gray-400 text-xl"></i>
+                    </div>
+                    <input 
+                        type="text" 
+                        id="searchInput"
+                        placeholder="🔍 Rechercher un médicament (nom, DCI, code-barres)..."
+                        class="w-full px-4 py-4 pl-14 border-2 border-gray-300 rounded-2xl placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all duration-200 text-gray-900 font-medium shadow-lg"
+                        autocomplete="off"
+                    >
+                </div>
+                
+                <!-- Résultats de recherche -->
+                <div id="searchResults" class="absolute z-50 w-full mt-2 bg-white rounded-2xl shadow-2xl border-2 border-gray-200 hidden max-h-96 overflow-y-auto"></div>
+            </div>
+            
+            <!-- Produits populaires avec cards modernes -->
+            <div>
+                <h3 class="text-lg font-bold text-gray-700 mb-4 flex items-center">
+                    <i class="fas fa-fire text-orange-500 mr-2"></i>
+                    Produits populaires
+                </h3>
+                <div class="grid grid-cols-2 lg:grid-cols-3 gap-4 pb-4">
+                    {% for med in medications|slice:":12" %}
+                    <div class="product-card group bg-gradient-to-br from-white to-gray-50 border-2 border-gray-200 rounded-2xl p-4 cursor-pointer hover:shadow-2xl hover:border-blue-500 transition-all duration-300 transform hover:-translate-y-2" 
+                         data-id="{{ med.id }}"
+                         data-name="{{ med.name }}"
+                         data-price="{{ med.selling_price }}"
+                         data-stock="{{ med.quantity }}">
+                        {% if med.image %}
+                        <img src="{{ med.image.url }}" alt="{{ med.name }}" class="w-full h-24 object-cover rounded-xl mb-3 group-hover:scale-110 transition-transform">
+                        {% else %}
+                        <div class="w-full h-24 bg-gradient-to-br 
+                            {% if med.category.name == 'Anti-asthmatiques' %}from-red-100 to-pink-100
+                            {% elif med.category.name == 'Antibiotiques' %}from-green-100 to-emerald-100
+                            {% elif med.category.name == 'Antalgiques' %}from-blue-100 to-cyan-100
+                            {% elif med.category.name == 'Vitamines' %}from-yellow-100 to-orange-100
+                            {% elif med.category.name == 'Antipaludiques' %}from-purple-100 to-violet-100
+                            {% else %}from-gray-100 to-slate-100
+                            {% endif %}
+                            rounded-xl flex flex-col items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                            <i class="fas 
+                                {% if med.form == 'inhalateur' %}fa-lungs
+                                {% elif med.form == 'sirop' %}fa-prescription-bottle
+                                {% elif med.form == 'injection' %}fa-syringe
+                                {% elif med.form == 'gélule' %}fa-capsules
+                                {% elif med.form == 'comprimé' %}fa-tablets
+                                {% elif med.form == 'pommade' or med.form == 'crème' %}fa-hand-holding-medical
+                                {% else %}fa-pills
+                                {% endif %}
+                                {% if med.category.name == 'Anti-asthmatiques' %}text-red-600
+                                {% elif med.category.name == 'Antibiotiques' %}text-green-600
+                                {% elif med.category.name == 'Antalgiques' %}text-blue-600
+                                {% elif med.category.name == 'Vitamines' %}text-yellow-600
+                                {% elif med.category.name == 'Antipaludiques' %}text-purple-600
+                                {% else %}text-gray-600
+                                {% endif %}
+                                text-4xl mb-2"></i>
+                            <span class="text-xs font-semibold 
+                                {% if med.category.name == 'Anti-asthmatiques' %}text-red-700
+                                {% elif med.category.name == 'Antibiotiques' %}text-green-700
+                                {% elif med.category.name == 'Antalgiques' %}text-blue-700
+                                {% elif med.category.name == 'Vitamines' %}text-yellow-700
+                                {% elif med.category.name == 'Antipaludiques' %}text-purple-700
+                                {% else %}text-gray-700
+                                {% endif %}">{{ med.category.name }}</span>
+                        </div>
+                        {% endif %}
+                        <p class="font-bold text-gray-900 text-sm truncate group-hover:text-blue-600 transition">{{ med.name }}</p>
+                        <p class="text-xs text-gray-500 truncate mb-2">{{ med.dosage }}</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-green-600 font-bold text-base">{{ med.selling_price|floatformat:0 }}</span>
+                            <span class="text-xs bg-gray-200 px-2 py-1 rounded-full">📦 {{ med.quantity }}</span>
+                        </div>
+                        <div class="mt-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <div class="bg-gradient-to-r from-blue-500 to-purple-500 text-white text-center py-2 rounded-xl font-semibold text-sm shadow-lg">
+                                <i class="fas fa-plus mr-1"></i> Ajouter
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Panneau droit - Panier avec design premium -->
+        <div class="w-full lg:w-96 bg-gradient-to-br from-white to-gray-50 rounded-3xl shadow-2xl p-6 border border-white backdrop-blur-xl lg:sticky lg:top-20 lg:max-h-[85vh] overflow-y-auto">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-2xl font-bold text-gray-900">
+                    <i class="fas fa-shopping-basket text-green-600 mr-2"></i>
+                    Panier
+                </h3>
+                <span id="cartCount" class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-full font-bold text-lg shadow-lg">0</span>
+            </div>
+            
+            <!-- Client -->
+            <div class="mb-4">
+                <label class="block text-sm font-bold text-gray-700 mb-2">
+                    <i class="fas fa-user mr-2 text-purple-500"></i>Client
+                </label>
+                <select id="customerSelect" class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-200 focus:border-purple-500 transition-all shadow-lg">
+                    <option value="">👤 Client anonyme</option>
+                    {% for customer in customers %}
+                    <option value="{{ customer.id }}">{{ customer.full_name }} - {{ customer.phone }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <!-- Liste du panier avec scroll -->
+            <div id="cartItems" class="mb-4 space-y-3 max-h-[300px] overflow-y-auto">
+                <div class="text-center py-12 text-gray-400">
+                    <i class="fas fa-shopping-basket text-6xl mb-3 opacity-30"></i>
+                    <p class="font-semibold">Panier vide</p>
+                    <p class="text-xs">Ajoutez des produits</p>
+                </div>
+            </div>
+            
+            <!-- Remise -->
+            <div class="mb-4 pb-4 border-t-2 border-gray-200 pt-4">
+                <label class="block text-sm font-bold text-gray-700 mb-2">
+                    <i class="fas fa-percent mr-2 text-orange-500"></i>Remise (%)
+                </label>
+                <input 
+                    type="number" 
+                    id="discountInput"
+                    min="0"
+                    max="100"
+                    value="0"
+                    class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-200 focus:border-orange-500 transition-all shadow-lg font-bold text-center"
+                >
+            </div>
+            
+            <!-- Totaux avec design amélioré -->
+            <div class="space-y-3 mb-4 pb-4 border-t-2 border-gray-200 pt-4 bg-gradient-to-br from-gray-50 to-blue-50 p-4 rounded-2xl">
+                <div class="flex justify-between text-gray-700 text-base">
+                    <span class="font-semibold">Sous-total:</span>
+                    <span class="font-bold" id="subtotal">0 FCFA</span>
+                </div>
+                <div class="flex justify-between text-red-600 text-base">
+                    <span class="font-semibold">Remise:</span>
+                    <span class="font-bold" id="discount">0 FCFA</span>
+                </div>
+                <div class="flex justify-between text-3xl font-extrabold text-gray-900 border-t-2 border-gray-300 pt-3">
+                    <span>Total:</span>
+                    <span id="total" class="bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">0 FCFA</span>
+                </div>
+            </div>
+            
+            <!-- Mode de paiement avec icônes -->
+            <div class="mb-4">
+                <label class="block text-sm font-bold text-gray-700 mb-3">
+                    <i class="fas fa-credit-card mr-2 text-blue-500"></i>Mode de paiement
+                </label>
+                <div class="grid grid-cols-2 gap-3">
+                    <button class="payment-method-btn active border-3 border-blue-600 bg-gradient-to-br from-blue-50 to-blue-100 text-blue-700 px-4 py-3 rounded-xl font-bold hover:shadow-xl transition-all transform hover:scale-105" data-method="especes">
+                        <i class="fas fa-money-bill-wave text-xl block mb-1"></i>
+                        <span class="text-xs">Espèces</span>
+                    </button>
+                    <button class="payment-method-btn border-2 border-gray-300 bg-white px-4 py-3 rounded-xl font-bold hover:shadow-xl transition-all transform hover:scale-105" data-method="carte">
+                        <i class="fas fa-credit-card text-xl block mb-1"></i>
+                        <span class="text-xs">Carte</span>
+                    </button>
+                    <button class="payment-method-btn border-2 border-gray-300 bg-white px-4 py-3 rounded-xl font-bold hover:shadow-xl transition-all transform hover:scale-105" data-method="mobile_money">
+                        <i class="fas fa-mobile-alt text-xl block mb-1"></i>
+                        <span class="text-xs">Mobile Money</span>
+                    </button>
+                    <button class="payment-method-btn border-2 border-gray-300 bg-white px-4 py-3 rounded-xl font-bold hover:shadow-xl transition-all transform hover:scale-105" data-method="credit">
+                        <i class="fas fa-handshake text-xl block mb-1"></i>
+                        <span class="text-xs">Crédit</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Montant payé -->
+            <div id="amountPaidContainer" class="mb-4">
+                <label class="block text-sm font-bold text-gray-700 mb-2">
+                    <i class="fas fa-wallet mr-2 text-green-500"></i>Montant payé
+                </label>
+                <input 
+                    type="number" 
+                    id="amountPaid"
+                    min="0"
+                    step="100"
+                    class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-green-200 focus:border-green-500 transition-all shadow-lg font-bold text-center text-xl"
+                    placeholder="0"
+                >
+                <p class="text-sm text-gray-600 mt-2 text-center">
+                    Monnaie: <span id="change" class="font-bold text-green-600 text-lg">0 FCFA</span>
+                </p>
+            </div>
+            
+            <!-- Boutons d'action avec animations -->
+            <div class="space-y-3">
+                <button id="completeBtn" class="w-full bg-gradient-to-r from-green-600 via-emerald-600 to-green-600 hover:from-green-700 hover:to-emerald-700 text-white px-6 py-4 rounded-2xl font-extrabold transition-all transform hover:scale-105 shadow-2xl text-lg animate-pulse hover:animate-none">
+                    <i class="fas fa-check-circle mr-2 text-2xl"></i>Finaliser la vente
+                </button>
+                <button id="clearBtn" class="w-full bg-red-100 hover:bg-red-200 text-red-700 px-6 py-3 rounded-2xl font-bold transition-all shadow-lg hover:shadow-xl">
+                    <i class="fas fa-trash mr-2"></i>Vider le panier
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let cart = [];
+let selectedPaymentMethod = 'especes';
+
+// Recherche de médicaments
+const searchInput = document.getElementById('searchInput');
+const searchResults = document.getElementById('searchResults');
+
+searchInput.addEventListener('input', async (e) => {
+    const query = e.target.value.trim();
+    
+    if (query.length < 2) {
+        searchResults.classList.add('hidden');
+        return;
+    }
+    
+    try {
+        const response = await fetch(`/api/search-medication/?q=${encodeURIComponent(query)}`);
+        const data = await response.json();
+        
+        if (data.results.length > 0) {
+            searchResults.innerHTML = data.results.map(med => `
+                <div class="search-result-item flex items-center p-4 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 cursor-pointer border-b transition-all" 
+                     data-id="${med.id}" 
+                     data-name="${med.name}" 
+                     data-price="${med.price}" 
+                     data-stock="${med.quantity}">
+                    <div class="w-14 h-14 bg-gradient-to-br from-blue-100 to-purple-100 rounded-xl flex items-center justify-center mr-4 shadow-lg">
+                        <i class="fas fa-pills text-blue-600 text-xl"></i>
+                    </div>
+                    <div class="flex-1">
+                        <p class="font-bold text-gray-900">${med.name}</p>
+                        <p class="text-sm text-gray-500">${med.dci}</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="font-bold text-green-600 text-lg">${med.price} FCFA</p>
+                        <p class="text-xs text-gray-500">📦 Stock: ${med.quantity}</p>
+                    </div>
+                </div>
+            `).join('');
+            searchResults.classList.remove('hidden');
+            
+            // Ajouter les événements
+            document.querySelectorAll('.search-result-item').forEach(item => {
+                item.addEventListener('click', () => addToCart(item));
+            });
+        } else {
+            searchResults.innerHTML = '<div class="p-6 text-center text-gray-500"><i class="fas fa-search text-4xl mb-2 opacity-30"></i><p>Aucun résultat</p></div>';
+            searchResults.classList.remove('hidden');
+        }
+    } catch (error) {
+        console.error('Erreur:', error);
+    }
+});
+
+// Cacher les résultats quand on clique ailleurs
+document.addEventListener('click', (e) => {
+    if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+        searchResults.classList.add('hidden');
+    }
+});
+
+// Ajouter au panier depuis les cartes produits
+document.querySelectorAll('.product-card').forEach(card => {
+    card.addEventListener('click', () => addToCart(card));
+});
+
+function addToCart(element) {
+    const id = element.dataset.id;
+    const name = element.dataset.name;
+    const price = parseFloat(element.dataset.price);
+    const stock = parseInt(element.dataset.stock);
+    
+    // Vérifier si déjà dans le panier
+    const existingItem = cart.find(item => item.id === id);
+    
+    if (existingItem) {
+        if (existingItem.quantity < stock) {
+            existingItem.quantity++;
+        } else {
+            alert('⚠️ Stock insuffisant!');
+            return;
+        }
+    } else {
+        cart.push({ id, name, price, quantity: 1, stock });
+    }
+    
+    searchInput.value = '';
+    searchResults.classList.add('hidden');
+    updateCart();
+}
+
+function updateCart() {
+    const cartItems = document.getElementById('cartItems');
+    const cartCount = document.getElementById('cartCount');
+    
+    if (cart.length === 0) {
+        cartItems.innerHTML = `
+            <div class="text-center py-12 text-gray-400">
+                <i class="fas fa-shopping-basket text-6xl mb-3 opacity-30"></i>
+                <p class="font-semibold">Panier vide</p>
+                <p class="text-xs">Ajoutez des produits</p>
+            </div>
+        `;
+    } else {
+        cartItems.innerHTML = cart.map((item, index) => `
+            <div class="bg-gradient-to-br from-white to-gray-50 border-2 border-gray-200 rounded-2xl p-4 hover:shadow-xl transition-all">
+                <div class="flex justify-between items-start mb-3">
+                    <div class="flex-1">
+                        <p class="font-bold text-gray-900 text-sm">${item.name}</p>
+                        <p class="text-xs text-green-600 font-bold mt-1">${item.price} FCFA</p>
+                    </div>
+                    <button onclick="removeFromCart(${index})" class="text-red-600 hover:text-red-800 hover:scale-110 transition-transform">
+                        <i class="fas fa-times-circle text-xl"></i>
+                    </button>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="decreaseQuantity(${index})" class="bg-gradient-to-br from-red-400 to-red-600 hover:from-red-500 hover:to-red-700 text-white w-9 h-9 rounded-xl flex items-center justify-center font-bold shadow-lg hover:scale-110 transition-all">-</button>
+                    <input type="number" value="${item.quantity}" min="1" max="${item.stock}" 
+                           onchange="updateQuantity(${index}, this.value)"
+                           class="w-16 text-center border-2 border-gray-300 rounded-xl py-2 font-bold text-gray-900">
+                    <button onclick="increaseQuantity(${index})" class="bg-gradient-to-br from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white w-9 h-9 rounded-xl flex items-center justify-center font-bold shadow-lg hover:scale-110 transition-all">+</button>
+                    <span class="text-sm text-gray-600 ml-auto font-bold">${(item.price * item.quantity).toFixed(0)} FCFA</span>
+                </div>
+            </div>
+        `).join('');
+    }
+    
+    cartCount.textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
+    updateTotals();
+}
+
+function removeFromCart(index) {
+    cart.splice(index, 1);
+    updateCart();
+}
+
+function increaseQuantity(index) {
+    if (cart[index].quantity < cart[index].stock) {
+        cart[index].quantity++;
+        updateCart();
+    } else {
+        alert('⚠️ Stock insuffisant!');
+    }
+}
+
+function decreaseQuantity(index) {
+    if (cart[index].quantity > 1) {
+        cart[index].quantity--;
+        updateCart();
+    }
+}
+
+function updateQuantity(index, value) {
+    const qty = parseInt(value);
+    if (qty > 0 && qty <= cart[index].stock) {
+        cart[index].quantity = qty;
+        updateCart();
+    } else {
+        alert('⚠️ Quantité invalide!');
+        updateCart();
+    }
+}
+
+function updateTotals() {
+    const subtotalEl = document.getElementById('subtotal');
+    const discountEl = document.getElementById('discount');
+    const totalEl = document.getElementById('total');
+    
+    const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const discountPercent = parseFloat(document.getElementById('discountInput').value) || 0;
+    const discountAmount = (subtotal * discountPercent) / 100;
+    const total = subtotal - discountAmount;
+    
+    subtotalEl.textContent = `${subtotal.toFixed(0)} FCFA`;
+    discountEl.textContent = `${discountAmount.toFixed(0)} FCFA`;
+    totalEl.textContent = `${total.toFixed(0)} FCFA`;
+    
+    updateChange();
+}
+
+document.getElementById('discountInput').addEventListener('input', updateTotals);
+
+// Mode de paiement
+document.querySelectorAll('.payment-method-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        document.querySelectorAll('.payment-method-btn').forEach(b => {
+            b.classList.remove('active', 'border-blue-600', 'bg-gradient-to-br', 'from-blue-50', 'to-blue-100', 'text-blue-700', 'border-3');
+            b.classList.add('border-gray-300', 'bg-white', 'border-2');
+        });
+        
+        this.classList.add('active', 'border-blue-600', 'bg-gradient-to-br', 'from-blue-50', 'to-blue-100', 'text-blue-700', 'border-3');
+        this.classList.remove('border-gray-300', 'bg-white', 'border-2');
+        
+        selectedPaymentMethod = this.dataset.method;
+        
+        const amountPaidContainer = document.getElementById('amountPaidContainer');
+        if (selectedPaymentMethod === 'especes') {
+            amountPaidContainer.classList.remove('hidden');
+        } else {
+            amountPaidContainer.classList.add('hidden');
+        }
+    });
+});
+
+// Calculer la monnaie
+document.getElementById('amountPaid').addEventListener('input', updateChange);
+
+function updateChange() {
+    const total = parseFloat(document.getElementById('total').textContent.replace(' FCFA', '').replace(/\s/g, ''));
+    const amountPaid = parseFloat(document.getElementById('amountPaid').value) || 0;
+    const change = amountPaid - total;
+    
+    document.getElementById('change').textContent = `${Math.max(0, change).toFixed(0)} FCFA`;
+}
+
+// Finaliser la vente
+document.getElementById('completeBtn').addEventListener('click', async () => {
+    if (cart.length === 0) {
+        alert('⚠️ Le panier est vide!');
+        return;
+    }
+    
+    const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const discountPercent = parseFloat(document.getElementById('discountInput').value) || 0;
+    const total = subtotal - ((subtotal * discountPercent) / 100);
+    const amountPaid = selectedPaymentMethod === 'especes' ? parseFloat(document.getElementById('amountPaid').value) || 0 : total;
+    
+    if (selectedPaymentMethod === 'especes' && amountPaid < total) {
+        alert('⚠️ Le montant payé est insuffisant!');
+        return;
+    }
+    
+    const saleData = {
+        customer_id: document.getElementById('customerSelect').value || null,
+        items: cart.map(item => ({
+            medication_id: item.id,
+            quantity: item.quantity,
+            unit_price: item.price
+        })),
+        subtotal: subtotal,
+        discount_percentage: discountPercent,
+        payment_method: selectedPaymentMethod,
+        amount_paid: amountPaid
+    };
+    
+    try {
+        const response = await fetch('/api/create-sale/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify(saleData)
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            alert(`✅ ${data.message}\n\n📄 Voulez-vous imprimer la facture?`);
+            window.open(`/sales/${data.sale_id}/invoice/`, '_blank');
+            
+            // Réinitialiser
+            cart = [];
+            document.getElementById('discountInput').value = 0;
+            document.getElementById('amountPaid').value = '';
+            document.getElementById('customerSelect').value = '';
+            updateCart();
+        } else {
+            alert(`❌ Erreur: ${data.message}`);
+        }
+    } catch (error) {
+        alert('❌ Erreur lors de la création de la vente!');
+        console.error(error);
+    }
+});
+
+// Vider le panier
+document.getElementById('clearBtn').addEventListener('click', () => {
+    if (confirm('🗑️ Voulez-vous vraiment vider le panier?')) {
+        cart = [];
+        updateCart();
+    }
+});
+</script>
+
+<style>
+    .search-result-item:last-child {
+        border-bottom: none;
+    }
+    
+    .payment-method-btn.active {
+        transform: scale(1.05);
+    }
+    
+    @keyframes pulse-subtle {
+        0%, 100% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 0.8;
+        }
+    }
+</style>
+{% endblock %}

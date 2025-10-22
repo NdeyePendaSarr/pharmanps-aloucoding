@@ -1,0 +1,26 @@
+databases:
+  - name: pharmanps_alou_db
+    databaseName: pharmanps_alou
+    user: pharmanps_alou_user
+    plan: free
+    region: frankfurt
+
+services:
+  - type: web
+    name: pharmanps-alou
+    runtime: python
+    plan: free
+    region: frankfurt
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn pharmanps_alou.wsgi:application"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.13.0
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: False
+      - key: DATABASE_URL
+        fromDatabase:
+          name: pharmanps_alou_db
+          property: connectionString
