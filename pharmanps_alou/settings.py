@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+    'cloudinary_storage',
     # Nos apps
     'users',
     'medications',
@@ -152,6 +152,13 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # Media files (Images uploadées)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+# -------------------------------------------------------------
+# NOUVELLE SECTION : Configuration CLOUDINARY pour le stockage Média
+# -------------------------------------------------------------
+
+# Utilise la variable d'environnement CLOUDINARY_URL (définie sur Render)
+# pour se connecter à Cloudinary.
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
