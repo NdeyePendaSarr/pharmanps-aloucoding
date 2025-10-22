@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
+from cloudinary.models import CloudinaryField
 
 
 class Category(models.Model):
@@ -58,7 +59,7 @@ class Medication(models.Model):
     # Autres informations
     location = models.CharField(max_length=100, blank=True, null=True, verbose_name="Emplacement", help_text="Rayon, étagère...")
     requires_prescription = models.BooleanField(default=False, verbose_name="Prescription requise")
-    image = models.ImageField(upload_to='medications/', blank=True, null=True, verbose_name="Image")
+    image = CloudinaryField('Image', blank=True, null=True, folder='medications')
     description = models.TextField(blank=True, null=True, verbose_name="Description")
     
     # Métadonnées

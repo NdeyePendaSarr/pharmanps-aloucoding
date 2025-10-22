@@ -14,7 +14,7 @@ from pathlib import Path
 from decouple import config
 import dj_database_url
 import os
-
+import cloudinary
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -158,7 +158,16 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # MEDIA FILES : Configuration CLOUDINARY pour le stockage des images
 # -------------------------------------------------------------
 
+
+
 # Configuration Cloudinary
+cloudinary.config(
+    cloud_name=config('CLOUDINARY_CLOUD_NAME', default=''),
+    api_key=config('CLOUDINARY_API_KEY', default=''),
+    api_secret=config('CLOUDINARY_API_SECRET', default=''),
+    secure=True
+)
+
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': config('CLOUDINARY_CLOUD_NAME', default=''),
     'API_KEY': config('CLOUDINARY_API_KEY', default=''),
@@ -175,7 +184,6 @@ else:
     # Développement : Stockage local
     MEDIA_URL = '/media/'
     MEDIA_ROOT = BASE_DIR / 'media'
-
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
