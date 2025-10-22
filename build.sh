@@ -19,4 +19,7 @@ python manage.py migrate
 echo "👤 Création du superuser..."
 python create_admin.py
 
+echo "👤 Création du superuser..."
+python create_admin.py
+
 echo "✅ Build terminé avec succès!"
