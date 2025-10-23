@@ -9,20 +9,20 @@
             <i class="fas fa-arrow-left mr-2"></i>Retour aux ventes
         </a>
 
-        <div class="bg-gradient-to-br from-pink-600 via-rose-600 to-fuchsia-600 rounded-3xl p-8 shadow-2xl text-white">
-            <div class="flex justify-between items-start">
-                <div>
-                    <p class="text-pink-100 text-sm mb-2">Vente</p>
-                    <h1 class="text-4xl md:text-5xl font-extrabold mb-3">#{{ sale.sale_number }}</h1>
-                    <p class="text-pink-100 text-base md:text-lg">
-                        <i class="fas fa-calendar mr-2"></i>{{ sale.created_at|date:"d/m/Y à H:i" }}
-                    </p>
-                </div>
-                <a href="{% url 'sale_invoice' sale.pk %}" target="_blank" class="bg-white hover:bg-gray-100 text-pink-600 px-6 py-3 rounded-2xl font-bold transition-all transform hover:scale-105 shadow-lg">
-                    <i class="fas fa-print mr-2"></i>Imprimer facture
-                </a>
-            </div>
+        <div class="bg-gradient-to-br from-pink-600 via-rose-600 to-fuchsia-600 rounded-3xl p-6 md:p-8 shadow-2xl text-white">
+    <div class="flex justify-between items-start">
+        <div>
+            <p class="text-pink-100 text-sm mb-2">Vente</p>
+            <h1 class="text-4xl md:text-5xl font-extrabold mb-3">#{{ sale.sale_number }}</h1>
+            <p class="text-pink-100 text-base md:text-lg">
+                <i class="fas fa-calendar mr-2"></i>{{ sale.created_at|date:"d/m/Y à H:i" }}
+            </p>
         </div>
+        <a href="{% url 'sale_invoice' sale.pk %}" target="_blank" class="bg-white hover:bg-gray-100 text-pink-600 px-4 py-2 md:px-6 md:py-3 rounded-2xl font-bold transition-all transform hover:scale-105 shadow-lg text-sm md:text-base">
+            <i class="fas fa-print mr-2"></i>Imprimer facture
+        </a>
+    </div>
+</div>
     </div>
 
     <div class="bg-gradient-to-br from-green-50 to-emerald-100 rounded-3xl p-8 mb-8 border-4 border-green-200 shadow-xl">
