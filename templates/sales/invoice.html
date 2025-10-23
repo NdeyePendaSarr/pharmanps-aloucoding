@@ -28,7 +28,7 @@
             position: relative;
         }
         
-        /* Décoration d'arrière-plan */
+        /* Décoration d'arrière-plan (inchangé) */
         .invoice-container::before {
             content: '';
             position: absolute;
@@ -61,7 +61,7 @@
             padding: 50px;
         }
         
-        /* En-tête élégant */
+        /* En-tête élégant (inchangé) */
         .invoice-header {
             display: flex;
             justify-content: space-between;
@@ -70,7 +70,7 @@
             padding-bottom: 30px;
             border-bottom: 3px solid transparent;
             background: linear-gradient(white, white) padding-box,
-                        linear-gradient(135deg, #667eea 0%, #764ba2 100%) border-box;
+                                 linear-gradient(135deg, #667eea 0%, #764ba2 100%) border-box;
             border-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%) 1;
         }
         
@@ -188,14 +188,20 @@
             font-weight: 600;
         }
         
+        /* Conteneur pour la table: Ajout de la classe pour le défilement horizontal */
+        .table-responsive {
+            overflow-x: auto;
+            border-radius: 15px; /* Permet au shadow/border d'être vu même si overflow est auto */
+        }
+
         /* Table élégante */
         table {
             width: 100%;
+            min-width: 600px; /* Force la table à déborder sur mobile pour permettre le défilement */
             border-collapse: separate;
             border-spacing: 0;
             margin-bottom: 30px;
-            border-radius: 15px;
-            overflow: hidden;
+            /* Suppression du border-radius et overflow de la table elle-même */
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
         }
         
@@ -242,7 +248,7 @@
             text-align: center;
         }
         
-        /* Badge quantité */
+        /* Badge quantité (inchangé) */
         .quantity-badge {
             display: inline-block;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -297,13 +303,13 @@
             padding: 20px;
         }
         
-        /* Pied de page */
+        /* Pied de page (inchangé) */
         .footer {
             margin-top: 80px;
             padding-top: 30px;
             border-top: 3px solid transparent;
             background: linear-gradient(white, white) padding-box,
-                        linear-gradient(135deg, #667eea 0%, #764ba2 100%) border-box;
+                                 linear-gradient(135deg, #667eea 0%, #764ba2 100%) border-box;
             border-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%) 1;
             text-align: center;
             color: #64748b;
@@ -326,7 +332,7 @@
             margin-top: 8px;
         }
         
-        /* Bouton d'impression */
+        /* Bouton d'impression (inchangé) */
         .print-btn {
             position: fixed;
             top: 30px;
@@ -357,7 +363,7 @@
             transform: translateY(-1px);
         }
         
-        /* Badge statut */
+        /* Badge statut (inchangé) */
         .status-badge {
             display: inline-block;
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
@@ -372,6 +378,7 @@
         }
         
         @media print {
+            /* (Règles d'impression inchangées) */
             body {
                 padding: 0;
                 background: white;
@@ -396,30 +403,108 @@
             }
         }
         
+        /* Modifications pour Mobile (max-width: 768px) */
         @media screen and (max-width: 768px) {
+            
+            /* Ajustement général du padding */
             .invoice-content {
-                padding: 25px;
+                padding: 20px; /* Réduit le padding général de 25px à 20px */
             }
             
+            /* En-tête empilé */
             .invoice-header {
                 flex-direction: column;
-                gap: 30px;
+                gap: 20px; /* Réduit l'espacement entre les blocs */
+                margin-bottom: 30px; /* Réduit la marge */
+            }
+
+            /* Logo et nom de l'entreprise */
+            .company-logo {
+                padding: 10px 15px; /* Réduit le padding du logo */
+                font-size: 24px; /* Réduit la taille du logo */
+                margin-bottom: 10px;
+            }
+
+            .company-info h1 {
+                font-size: 22px; /* Réduit la taille du titre de l'entreprise */
             }
             
+            .company-info p {
+                font-size: 13px; /* Réduit la taille des informations de l'entreprise */
+                line-height: 1.5;
+            }
+
+            /* Détails de la facture (prend toute la largeur) */
             .invoice-details {
-                text-align: left;
+                text-align: left; /* Aligne les détails à gauche pour une meilleure lecture sur mobile */
                 width: 100%;
+                padding: 20px;
             }
             
+            .invoice-number {
+                font-size: 28px; /* Réduit la taille du numéro de facture */
+            }
+
+            .invoice-date {
+                justify-content: flex-start; /* Aligne la date à gauche */
+            }
+
+            /* Table et Conteneur */
+            .table-responsive {
+                margin-bottom: 20px;
+            }
+
+            thead th, tbody td {
+                padding: 12px 10px; /* Réduit le padding des cellules */
+                font-size: 13px; /* Réduit la taille de police du contenu du tableau */
+            }
+
+            /* Titres de section */
+            .section-title {
+                padding: 12px 15px;
+                font-size: 14px;
+                margin-bottom: 15px;
+            }
+
+            /* Infos Client/Paiement */
+            .client-info, .payment-info {
+                padding: 15px;
+            }
+
+            .client-info p, .payment-info p {
+                font-size: 14px; /* Réduit la taille de police */
+                flex-direction: column; /* Empile l'étiquette et la valeur pour éviter le débordement */
+                align-items: flex-start;
+                gap: 3px;
+                margin-bottom: 10px;
+            }
+            
+            .client-info p strong, .payment-info p strong {
+                min-width: auto;
+            }
+
+            /* Totaux */
             .totals {
-                width: 100%;
+                width: 100%; /* Prend toute la largeur */
                 float: none;
+                margin-top: 15px;
+            }
+
+            .totals-row {
+                font-size: 15px; /* Ajuste la taille de police */
+                padding: 12px 15px;
             }
             
+            .totals-row.total {
+                font-size: 18px; /* Ajuste la taille du total */
+                padding: 15px;
+            }
+            
+            /* Bouton d'impression */
             .print-btn {
-                top: 15px;
-                right: 15px;
-                padding: 12px 20px;
+                top: 10px;
+                right: 10px;
+                padding: 10px 15px; /* Bouton plus petit */
                 font-size: 14px;
             }
         }
@@ -432,7 +517,6 @@
 
     <div class="invoice-container">
         <div class="invoice-content">
-            <!-- En-tête -->
             <div class="invoice-header">
                 <div class="company-info">
                     <div class="company-logo">💊</div>
@@ -454,7 +538,6 @@
                 </div>
             </div>
 
-            <!-- Informations client -->
             {% if sale.customer %}
             <div class="section">
                 <div class="section-title">Informations Client</div>
@@ -471,37 +554,38 @@
             </div>
             {% endif %}
 
-            <!-- Détails de la vente -->
             <div class="section">
                 <div class="section-title">Détails de la Vente</div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Médicament</th>
-                            <th class="text-center">Quantité</th>
-                            <th class="text-right">Prix unitaire</th>
-                            <th class="text-right">Sous-total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for item in sale.items.all %}
-                        <tr>
-                            <td>
-                                <strong style="color: #1e293b; font-size: 16px;">{{ item.medication.name }}</strong><br>
-                                <small style="color: #94a3b8; font-size: 13px;">{{ item.medication.dosage }}</small>
-                            </td>
-                            <td class="text-center">
-                                <span class="quantity-badge">{{ item.quantity }}</span>
-                            </td>
-                            <td class="text-right" style="color: #64748b; font-weight: 600;">{{ item.unit_price|floatformat:0 }} FCFA</td>
-                            <td class="text-right"><strong style="color: #1e293b; font-size: 16px;">{{ item.subtotal|floatformat:0 }} FCFA</strong></td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="min-width: 150px;">Médicament</th>
+                                <th class="text-center" style="min-width: 80px;">Qté</th>
+                                <th class="text-right" style="min-width: 120px;">Prix unitaire</th>
+                                <th class="text-right" style="min-width: 120px;">Sous-total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in sale.items.all %}
+                            <tr>
+                                <td>
+                                    <strong style="color: #1e293b; font-size: 15px;">{{ item.medication.name }}</strong><br>
+                                    <small style="color: #94a3b8; font-size: 12px;">{{ item.medication.dosage }}</small>
+                                </td>
+                                <td class="text-center">
+                                    <span class="quantity-badge">{{ item.quantity }}</span>
+                                </td>
+                                <td class="text-right" style="color: #64748b; font-weight: 600;">{{ item.unit_price|floatformat:0 }} FCFA</td>
+                                <td class="text-right"><strong style="color: #1e293b; font-size: 15px;">{{ item.subtotal|floatformat:0 }} FCFA</strong></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
-            <!-- Totaux -->
             <div class="totals">
                 <div class="totals-row subtotal">
                     <span>Sous-total :</span>
@@ -521,7 +605,6 @@
 
             <div style="clear: both;"></div>
 
-            <!-- Informations de paiement -->
             <div class="section" style="margin-top: 50px;">
                 <div class="section-title">Informations de Paiement</div>
                 <div class="payment-info">
@@ -534,7 +617,6 @@
                 </div>
             </div>
 
-            <!-- Pied de page -->
             <div class="footer">
                 <p class="footer-thank">✨ Merci pour votre confiance ! ✨</p>
                 <p style="color: #64748b; font-size: 15px; margin-top: 10px;">
