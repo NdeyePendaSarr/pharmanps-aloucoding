@@ -155,42 +155,35 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
 # -------------------------------------------------------------
-# MEDIA FILES : Configuration CLOUDINARY
+# MEDIA FILES : Configuration CLOUDINARY pour le stockage des images
 # -------------------------------------------------------------
 
-CLOUDINARY_CLOUD_NAME = config('CLOUDINARY_CLOUD_NAME', default='')
-CLOUDINARY_API_KEY = config('CLOUDINARY_API_KEY', default='')
-CLOUDINARY_API_SECRET = config('CLOUDINARY_API_SECRET', default='')
 
-# Mettez les variables dans un dictionnaire de configuration
+
+# Configuration Cloudinary
+cloudinary.config(
+    cloud_name=config('CLOUDINARY_CLOUD_NAME', default=''),
+    api_key=config('CLOUDINARY_API_KEY', default=''),
+    api_secret=config('CLOUDINARY_API_SECRET', default=''),
+    secure=True
+)
+
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': CLOUDINARY_CLOUD_NAME,
-    'API_KEY': CLOUDINARY_API_KEY,
-    'API_SECRET': CLOUDINARY_API_SECRET,
+    'CLOUD_NAME': config('CLOUDINARY_CLOUD_NAME', default=''),
+    'API_KEY': config('CLOUDINARY_API_KEY', default=''),
+    'API_SECRET': config('CLOUDINARY_API_SECRET', default=''),
 }
 
 # Si Cloudinary est configuré (production), l'utiliser
-if CLOUDINARY_CLOUD_NAME:
-    # 1. Initialiser la librairie cloudinary UNIQUEMENT si les variables existent
-    cloudinary.config(
-        cloud_name=CLOUDINARY_CLOUD_NAME,
-        api_key=CLOUDINARY_API_KEY,
-        api_secret=CLOUDINARY_API_SECRET,
-        secure=True
-    )
-
-    # 2. Production : Cloudinary Storage
+# Sinon utiliser le stockage local (développement)
+if CLOUDINARY_STORAGE['CLOUD_NAME']:
+    # Production : Cloudinary
     DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
     MEDIA_URL = '/media/'  # Cloudinary gère l'URL
 else:
-    # 3. Développement : Stockage local (Fallback)
+    # Développement : Stockage local
     MEDIA_URL = '/media/'
     MEDIA_ROOT = BASE_DIR / 'media'
-
-# La configuration de Cloudinary n'est pas nécessaire si elle est déjà dans CLOUDINARY_STORAGE et DEFAULT_FILE_STORAGE.
-# La ligne ci-dessous peut être supprimée si vous avez remplacé le bloc précédent par celui-ci.
-# Laisser les définitions des variables en Python avant l'appel des librairies est plus sûr.
-
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
