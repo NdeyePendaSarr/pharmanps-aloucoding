@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Catégories - PharmaNPS-Alou{% endblock %}
 
@@ -20,9 +21,9 @@
                     </div>
                     <div>
                         <h1 class="text-3xl lg:text-5xl font-bold text-gray-900 mb-1">
-    Catégories
-</h1>
-<p class="text-gray-600 text-lg">Organisez vos médicaments par catégorie</p>
+                            Catégories
+                        </h1>
+                        <p class="text-gray-600 text-lg">Organisez vos médicaments par catégorie</p>
                     </div>
                 </div>
             </div>
@@ -57,7 +58,11 @@
                     <div>
                         <p class="text-green-100 text-sm font-semibold uppercase tracking-wide mb-1">Médicaments Total</p>
                         <p class="text-4xl font-bold">
-                            {% for cat in categories %}{{ cat.medications.count }}{% if not forloop.last %}+{% endif %}{% endfor %}
+                            <!-- ATTENTION: Cette logique peut être lente si vous avez beaucoup de médicaments -->
+                            {% with total_meds=0 %}
+                            {% for cat in categories %}{% with total_meds=total_meds|add:cat.medications.count %}{% endwith %}{% endfor %}
+                            {{ total_meds }}
+                            {% endwith %}
                         </p>
                     </div>
                     <div class="bg-white/20 backdrop-blur-sm p-4 rounded-xl">
@@ -108,21 +113,27 @@
                         {{ cat.description|default:"Aucune description disponible pour cette catégorie" }}
                     </p>
                     
-                    <!-- Actions -->
+                    <!-- Actions : Liens vers Modifier et Supprimer -->
                     <div class="flex gap-3">
-                        <button class="flex-1 group/btn bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-5 py-3 rounded-xl font-semibold transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105 relative overflow-hidden">
+                        
+                        <!-- Bouton Modifier -->
+                        <a href="{% url 'category_update' pk=cat.pk %}" 
+                           class="flex-1 group/btn bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-5 py-3 rounded-xl font-semibold transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105 relative overflow-hidden text-center">
                             <span class="relative z-10 flex items-center justify-center">
                                 <i class="fas fa-edit mr-2 group-hover/btn:rotate-12 transition-transform"></i>
                                 Modifier
                             </span>
                             <div class="absolute inset-0 bg-white opacity-0 group-hover/btn:opacity-20 transition-opacity"></div>
-                        </button>
-                        <button class="group/del bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-5 py-3 rounded-xl font-semibold transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105 relative overflow-hidden">
+                        </a>
+                        
+                        <!-- Bouton Supprimer -->
+                        <a href="{% url 'category_delete' pk=cat.pk %}" 
+                           class="group/del bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-5 py-3 rounded-xl font-semibold transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105 relative overflow-hidden flex items-center justify-center">
                             <span class="relative z-10">
                                 <i class="fas fa-trash group-hover/del:scale-110 transition-transform"></i>
                             </span>
                             <div class="absolute inset-0 bg-white opacity-0 group-hover/del:opacity-20 transition-opacity"></div>
-                        </button>
+                        </a>
                     </div>
                 </div>
 
@@ -155,6 +166,7 @@
 </div>
 
 <style>
+    /* Styles CSS pour les animations (à intégrer au besoin ou dans un fichier CSS externe) */
     .fade-in {
         animation: fadeInUp 0.6s ease-out;
     }
@@ -203,7 +215,6 @@
 
     @keyframes shine {
         to {
-            left: 100%;
         }
     }
 </style>

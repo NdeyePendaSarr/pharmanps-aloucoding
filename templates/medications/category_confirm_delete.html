@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block title %}Supprimer Catégorie : {{ object.name }} - PharmaNPS-Alou{% endblock %}
+
+{% block content %}
+<div class="min-h-screen py-12 px-4 flex items-start justify-center">
+    <div class="max-w-xl w-full">
+        <!-- En-tête de retour -->
+        <div class="mb-10 fade-in">
+            <a href="{% url 'category_list' %}" 
+               class="group inline-flex items-center text-gray-500 hover:text-gray-700 font-semibold mb-6 transition-all duration-300 hover:translate-x-[-4px]">
+                <i class="fas fa-arrow-left mr-2 transition-transform group-hover:translate-x-[-4px]"></i>
+                Retour aux catégories
+            </a>
+            
+            <div class="flex items-center gap-4">
+                <div class="bg-red-500 p-4 rounded-2xl shadow-lg">
+                    <i class="fas fa-exclamation-triangle text-white text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-1">
+                        Confirmation de Suppression
+                    </h1>
+                    <p class="text-gray-500">
+                        Veuillez confirmer si vous souhaitez vraiment supprimer cette catégorie.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Carte de suppression -->
+        <div class="bg-white rounded-3xl shadow-2xl border-t-8 border-red-500 overflow-hidden fade-in p-8 sm:p-10">
+            <div class="text-center mb-8">
+                <i class="fas fa-trash-alt text-red-500 text-6xl mb-4 animate-bounce-slow"></i>
+                
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">
+                    Supprimer la catégorie : <span class="text-red-600">{{ object.name }}</span>
+                </h2>
+                
+                <p class="text-lg text-gray-600">
+                    Êtes-vous sûr de vouloir supprimer la catégorie "<strong>{{ object.name }}</strong>" ?
+                </p>
+                
+                <div class="mt-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl font-medium text-sm">
+                    <i class="fas fa-exclamation-circle mr-2"></i>
+                    Cette action est **irréversible**. Tous les produits associés à cette catégorie devront être reclassés.
+                </div>
+            </div>
+
+            <form method="POST" action="{% url 'category_delete' pk=object.pk %}" class="space-y-4">
+                {% csrf_token %}
+                
+                <!-- Bloc d'actions -->
+                <div class="flex flex-col sm:flex-row justify-center gap-4 pt-4">
+                    <!-- Bouton Annuler -->
+                    <a href="{% url 'category_list' %}" 
+                       class="group px-8 py-3.5 bg-gray-100 border-2 border-gray-300 hover:border-gray-400 text-gray-700 rounded-xl font-semibold transition-all duration-300 shadow-sm hover:shadow-md text-center order-2 sm:order-1">
+                        <i class="fas fa-times mr-2 transition-transform group-hover:rotate-90"></i>
+                        Annuler et revenir
+                    </a>
+                    
+                    <!-- Bouton Confirmer la Suppression (Rouge Vif) -->
+                    <button type="submit" 
+                            class="group px-8 py-3.5 bg-gradient-to-r from-red-600 via-red-700 to-red-800 hover:from-red-700 hover:via-red-800 hover:to-red-900 text-white rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-xl shadow-red-300/50 relative overflow-hidden order-1 sm:order-2">
+                        <span class="relative z-10 flex items-center justify-center">
+                            <i class="fas fa-check-circle mr-2 group-hover:scale-110 transition-transform"></i>
+                            Oui, Supprimer définitivement
+                        </span>
+                        <div class="absolute inset-0 bg-gradient-to-r from-red-400 to-red-600 opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .fade-in {
+        animation: fadeInUp 0.6s ease-out;
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes bounce-slow {
+        0%, 100% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.05);
+        }
+    }
+    .animate-bounce-slow {
+        animation: bounce-slow 2s infinite ease-in-out;
+    }
+</style>
+{% endblock %}
