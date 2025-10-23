@@ -1,12 +1,11 @@
+{% load static %} 
+
 <div class="flex flex-col lg:flex-row min-h-screen bg-gradient-to-br from-gray-50 to-purple-50">
-    <!-- Partie gauche - Formulaire -->
     <div class="flex-1 flex flex-col items-center justify-center p-8">
-        <!-- Formulaire ultra-moderne -->
         <div class="bg-white/80 backdrop-blur-md rounded-3xl shadow-2xl p-10 border border-white/20 w-full max-w-md">
             <form method="POST" class="space-y-7">
                 {% csrf_token %}
                 
-                <!-- Nom d'utilisateur -->
                 <div class="group">
                     <label for="username" class="flex items-center text-sm font-bold text-gray-800 mb-3 uppercase tracking-wide">
                         <span class="bg-gradient-to-r from-blue-500 to-purple-500 text-white w-8 h-8 rounded-lg flex items-center justify-center mr-3 shadow-lg">
@@ -29,7 +28,6 @@
                     </div>
                 </div>
 
-                <!-- Mot de passe -->
                 <div class="group">
                     <label for="password" class="flex items-center text-sm font-bold text-gray-800 mb-3 uppercase tracking-wide">
                         <span class="bg-gradient-to-r from-purple-500 to-pink-500 text-white w-8 h-8 rounded-lg flex items-center justify-center mr-3 shadow-lg">
@@ -52,7 +50,6 @@
                     </div>
                 </div>
 
-                <!-- Options élégantes -->
                 <div class="flex items-center justify-between pt-2">
                     <label class="flex items-center cursor-pointer group/check">
                         <input 
@@ -70,7 +67,6 @@
                     </a>
                 </div>
 
-                <!-- Bouton de connexion spectaculaire -->
                 <div class="pt-4">
                     <button 
                         type="submit" 
@@ -85,7 +81,6 @@
                     </button>
                 </div>
 
-                <!-- Séparateur stylé -->
                 <div class="relative py-4">
                     <div class="absolute inset-0 flex items-center">
                         <div class="w-full border-t-2 border-gray-200"></div>
@@ -97,7 +92,6 @@
                     </div>
                 </div>
 
-                <!-- Lien inscription premium -->
                 <div class="text-center">
                     <a href="{% url 'register' %}" class="group inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-green-50 to-emerald-50 hover:from-green-100 hover:to-emerald-100 border-2 border-green-200 hover:border-green-300 rounded-2xl font-bold text-green-700 hover:text-green-800 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
                         <i class="fas fa-user-plus text-xl group-hover:rotate-12 transition-transform"></i>
@@ -108,7 +102,6 @@
             </form>
         </div>
 
-        <!-- Badge de sécurité -->
         <div class="flex flex-col sm:flex-row items-center justify-center gap-3 text-sm text-gray-600 mt-6">
             <div class="flex items-center gap-2 bg-white/50 backdrop-blur-sm px-4 py-2 rounded-full shadow-md">
                 <i class="fas fa-shield-alt text-green-600"></i>
@@ -121,14 +114,11 @@
         </div>
     </div>
 
-    <!-- Partie droite - Photo des fondateurs -->
     <div class="flex-1 flex items-center justify-center py-12 bg-gradient-to-br from-gray-900 via-purple-900 to-black relative">
-        <!-- Décorations -->
         <div class="absolute inset-0 bg-black/40"></div>
         <div class="absolute top-20 left-20 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
         <div class="absolute bottom-20 right-20 w-96 h-96 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
 
-        <!-- Contenu image -->
         <div class="relative z-10 text-center px-6">
             <div class="relative inline-block group mb-6">
                 <div class="absolute inset-0 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 rounded-3xl blur-2xl opacity-50 group-hover:opacity-75 transition duration-500 animate-pulse-slow"></div>
