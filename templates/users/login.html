@@ -1,9 +1,9 @@
 {% load static %} <div class="flex flex-col-reverse lg:flex-row min-h-screen bg-gradient-to-br from-gray-50 to-purple-50">
     
-    <div class="flex-1 flex items-center justify-center py-12 px-4 lg:px-0 bg-gradient-to-br from-gray-900 via-purple-900 to-black relative">
+    <div class="flex-1 flex items-center justify-center py-12 bg-gradient-to-br from-gray-900 via-purple-900 to-black relative">
         <div class="absolute inset-0 bg-black/40"></div>
-        <div class="absolute top-20 left-20 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob hidden lg:block"></div>
-        <div class="absolute bottom-20 right-20 w-96 h-96 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000 hidden lg:block"></div>
+        <div class="absolute top-20 left-20 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+        <div class="absolute bottom-20 right-20 w-96 h-96 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
 
         <div class="relative z-10 text-center px-6">
             <div class="relative inline-block group mb-6">
@@ -14,7 +14,7 @@
                         <img 
                             src="{% static 'images/founders.jpg' %}" 
                             alt="NPS & AlouCoding - Fondateurs" 
-                            class="w-full max-w-xs mx-auto h-auto object-cover object-top rounded-2xl shadow-inner"
+                            class="w-full max-w-sm sm:max-w-md lg:max-w-lg h-auto object-cover object-top rounded-2xl shadow-inner"
                         />
                     </div>
                 </div>
@@ -27,11 +27,13 @@
             </div>
 
             <div class="text-center text-white mt-10">
-                <h2 class="text-xl sm:text-2xl font-black mb-2 leading-tight"> <span class="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                <h2 class="text-4xl font-black mb-2 leading-tight">
+                    <span class="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
                         De l'asthme à l'entrepreneuriat
                     </span>
                 </h2>
-                <p class="text-sm font-light text-white/90"> Transformer les défis en opportunités
+                <p class="text-lg font-light text-white/90">
+                    Transformer les défis en opportunités
                 </p>
             </div>
         </div>
