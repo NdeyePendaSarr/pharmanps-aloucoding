@@ -10,6 +10,18 @@ import django
 from datetime import datetime, timedelta
 from decimal import Decimal
 
+# ✅ BLOQUER EN PRODUCTION
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'pharmanps_alou.settings')
+django.setup()
+
+from django.conf import settings
+
+# PROTECTION : NE PAS EXÉCUTER EN PRODUCTION
+if not settings.DEBUG:
+    print("❌ ERREUR : Ce script ne peut s'exécuter qu'en mode DEBUG=True")
+    print("   populate_db.py est uniquement pour les environnements de développement.")
+    sys.exit(1)
+    
 # Forcer l'encodage UTF-8
 if sys.stdout.encoding != 'utf-8':
     sys.stdout.reconfigure(encoding='utf-8')
