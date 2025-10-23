@@ -12,9 +12,9 @@ User = get_user_model()
 # ✅ CRÉER ADMIN UNIQUEMENT S'IL N'EXISTE PAS
 if not User.objects.filter(username='admin').exists():
     User.objects.create_superuser(
-        username='admin',
-        email='admin@pharmanps-alou.com',
-        password='VotreMotDePasseForte123!'
+        username='Ndeye Penda SARR',
+        email='sndeyependa27@gmail.com',
+        password='Pensarr@12#'
     )
     print("✅ Superuser créé")
 else:
