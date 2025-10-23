@@ -1,178 +1,134 @@
-{% extends 'base.html' %}
-{% load static %}
-
-{% block title %}Connexion - PharmaNPS-Alou{% endblock %}
-
-{% block auth_content %}
-<div class="min-h-screen flex flex-col lg:flex-row relative">
-
-    <div class="absolute inset-0 bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 opacity-90 lg:hidden"></div>
-    <div class="absolute inset-0 lg:hidden">
-        <div class="absolute top-0 left-0 w-96 h-96 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
-        <div class="absolute top-0 right-0 w-96 h-96 bg-purple-400 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
-        <div class="absolute bottom-0 left-1/2 w-96 h-96 bg-pink-400 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000"></div>
-    </div>
-
-    <div class="relative flex-1 flex items-center justify-center p-4 sm:p-8 lg:p-12 z-10 bg-white lg:bg-gradient-to-br lg:from-gray-50 lg:to-purple-50">
-        
-        <div class="relative w-full max-w-md xl:max-w-lg space-y-8 py-12">
-            
-            <div class="text-center">
-                <div class="flex justify-center mb-6">
-                    <div class="relative group">
-                        <div class="absolute inset-0 bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 rounded-3xl blur-xl opacity-75 group-hover:opacity-100 transition duration-500 animate-pulse-slow"></div>
-                        <div class="relative bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 rounded-3xl p-6 shadow-2xl transform group-hover:scale-105 transition duration-500">
-                            <i class="fas fa-pills text-white text-5xl sm:text-6xl drop-shadow-2xl"></i>
-                        </div>
-                    </div>
-                </div>
+<div class="flex flex-col lg:flex-row min-h-screen bg-gradient-to-br from-gray-50 to-purple-50">
+    <!-- Partie gauche - Formulaire -->
+    <div class="flex-1 flex flex-col items-center justify-center p-8">
+        <!-- Formulaire ultra-moderne -->
+        <div class="bg-white/80 backdrop-blur-md rounded-3xl shadow-2xl p-10 border border-white/20 w-full max-w-md">
+            <form method="POST" class="space-y-7">
+                {% csrf_token %}
                 
-                <h1 class="text-4xl sm:text-5xl font-black text-gray-900 mb-3 tracking-tight">
-                    <span class="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-                        PharmaNPS-Alou
-                    </span>
-                </h1>
-                <p class="text-lg sm:text-xl text-gray-700 font-semibold mb-2">
-                    Manager Professionnel
-                </p>
-                <p class="text-base text-gray-600">
-                    Connectez-vous pour gérer votre pharmacie
-                </p>
-            </div>
-
-            {% if messages %}
-            <div class="space-y-3">
-                {% for message in messages %}
-                <div class="{% if message.tags == 'error' %}bg-gradient-to-r from-red-50 to-red-100 border-l-4 border-red-500{% elif message.tags == 'success' %}bg-gradient-to-r from-green-50 to-green-100 border-l-4 border-green-500{% else %}bg-gradient-to-r from-blue-50 to-blue-100 border-l-4 border-blue-500{% endif %} px-6 py-4 rounded-xl shadow-lg backdrop-blur-sm animate-fade-in" role="alert">
-                    <div class="flex items-center">
-                        <div class="{% if message.tags == 'error' %}bg-red-500{% elif message.tags == 'success' %}bg-green-500{% else %}bg-blue-500{% endif %} rounded-full p-2 mr-4">
-                            <i class="fas {% if message.tags == 'error' %}fa-exclamation-circle{% elif message.tags == 'success' %}fa-check-circle{% else %}fa-info-circle{% endif %} text-white"></i>
-                        </div>
-                        <span class="font-semibold text-gray-800">{{ message }}</span>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-            {% endif %}
-
-            <div class="bg-white/80 backdrop-blur-md rounded-3xl shadow-2xl p-6 sm:p-10 border border-white/20 w-full">
-                <form method="POST" class="space-y-7">
-                    {% csrf_token %}
-                    
-                    <div class="group">
-                        <label for="username" class="flex items-center text-sm font-bold text-gray-800 mb-3 uppercase tracking-wide">
-                            <span class="bg-gradient-to-r from-blue-500 to-purple-500 text-white w-8 h-8 rounded-lg flex items-center justify-center mr-3 shadow-lg">
-                                <i class="fas fa-user text-sm"></i>
-                            </span>
-                            Nom d'utilisateur
-                        </label>
-                        <div class="relative">
-                            <input 
-                                type="text" 
-                                name="username" 
-                                id="username" 
-                                required
-                                class="block w-full px-6 py-4 border-2 border-gray-200 rounded-2xl placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-purple-200 focus:border-purple-500 transition-all duration-300 text-gray-900 font-semibold hover:border-gray-300 group-hover:shadow-lg bg-white"
-                                placeholder="Entrez votre nom d'utilisateur"
-                            >
-                            <div class="absolute inset-y-0 right-0 flex items-center pr-5 pointer-events-none">
-                                <i class="fas fa-chevron-right text-gray-300 group-hover:text-purple-400 transition-colors"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="group">
-                        <label for="password" class="flex items-center text-sm font-bold text-gray-800 mb-3 uppercase tracking-wide">
-                            <span class="bg-gradient-to-r from-purple-500 to-pink-500 text-white w-8 h-8 rounded-lg flex items-center justify-center mr-3 shadow-lg">
-                                <i class="fas fa-lock text-sm"></i>
-                            </span>
-                            Mot de passe
-                        </label>
-                        <div class="relative">
-                            <input 
-                                type="password" 
-                                name="password" 
-                                id="password" 
-                                required
-                                class="block w-full px-6 py-4 border-2 border-gray-200 rounded-2xl placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-purple-200 focus:border-purple-500 transition-all duration-300 text-gray-900 font-semibold hover:border-gray-300 group-hover:shadow-lg bg-white"
-                                placeholder="••••••••••"
-                            >
-                            <div class="absolute inset-y-0 right-0 flex items-center pr-5 pointer-events-none">
-                                <i class="fas fa-shield-alt text-gray-300 group-hover:text-purple-400 transition-colors"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center justify-between pt-2">
-                        <label class="flex items-center cursor-pointer group/check">
-                            <input 
-                                id="remember" 
-                                name="remember" 
-                                type="checkbox" 
-                                class="w-5 h-5 text-purple-600 focus:ring-purple-500 border-gray-300 rounded cursor-pointer transition-all"
-                            >
-                            <span class="ml-3 text-sm font-semibold text-gray-700 group-hover/check:text-purple-600 transition-colors">
-                                Se souvenir de moi
-                            </span>
-                        </label>
-                        <a href="#" class="text-sm font-bold text-purple-600 hover:text-purple-700 transition-colors hover:underline">
-                            Mot de passe oublié ?
-                        </a>
-                    </div>
-
-                    <div class="pt-4">
-                        <button 
-                            type="submit" 
-                            class="group relative w-full flex justify-center items-center py-5 px-6 border-0 rounded-2xl text-lg font-bold text-white bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:from-blue-700 hover:via-purple-700 hover:to-pink-700 focus:outline-none focus:ring-4 focus:ring-purple-300 transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 shadow-2xl hover:shadow-purple-500/50 overflow-hidden"
+                <!-- Nom d'utilisateur -->
+                <div class="group">
+                    <label for="username" class="flex items-center text-sm font-bold text-gray-800 mb-3 uppercase tracking-wide">
+                        <span class="bg-gradient-to-r from-blue-500 to-purple-500 text-white w-8 h-8 rounded-lg flex items-center justify-center mr-3 shadow-lg">
+                            <i class="fas fa-user text-sm"></i>
+                        </span>
+                        Nom d'utilisateur
+                    </label>
+                    <div class="relative">
+                        <input 
+                            type="text" 
+                            name="username" 
+                            id="username" 
+                            required
+                            class="block w-full px-6 py-4 border-2 border-gray-200 rounded-2xl placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-purple-200 focus:border-purple-500 transition-all duration-300 text-gray-900 font-semibold hover:border-gray-300 group-hover:shadow-lg bg-white"
+                            placeholder="Entrez votre nom d'utilisateur"
                         >
-                            <span class="absolute inset-0 w-full h-full bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 opacity-0 group-hover:opacity-30 transition-opacity duration-300"></span>
-                            <span class="relative flex items-center gap-3">
-                                <i class="fas fa-sign-in-alt text-xl group-hover:translate-x-1 transition-transform"></i>
-                                Se connecter maintenant
-                                <i class="fas fa-arrow-right text-lg group-hover:translate-x-2 transition-transform"></i>
-                            </span>
-                        </button>
-                    </div>
-
-                    <div class="relative py-4">
-                        <div class="absolute inset-0 flex items-center">
-                            <div class="w-full border-t-2 border-gray-200"></div>
-                        </div>
-                        <div class="relative flex justify-center">
-                            <span class="px-6 bg-white/80 text-gray-500 font-bold uppercase text-xs tracking-wider backdrop-blur-sm">
-                                Nouveau sur la plateforme ?
-                            </span>
+                        <div class="absolute inset-y-0 right-0 flex items-center pr-5 pointer-events-none">
+                            <i class="fas fa-chevron-right text-gray-300 group-hover:text-purple-400 transition-colors"></i>
                         </div>
                     </div>
+                </div>
 
-                    <div class="text-center">
-                        <a href="{% url 'register' %}" class="group inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-green-50 to-emerald-50 hover:from-green-100 hover:to-emerald-100 border-2 border-green-200 hover:border-green-300 rounded-2xl font-bold text-green-700 hover:text-green-800 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
-                            <i class="fas fa-user-plus text-xl group-hover:rotate-12 transition-transform"></i>
-                            <span>Créer un compte gratuit</span>
-                            <i class="fas fa-arrow-right group-hover:translate-x-2 transition-transform"></i>
-                        </a>
+                <!-- Mot de passe -->
+                <div class="group">
+                    <label for="password" class="flex items-center text-sm font-bold text-gray-800 mb-3 uppercase tracking-wide">
+                        <span class="bg-gradient-to-r from-purple-500 to-pink-500 text-white w-8 h-8 rounded-lg flex items-center justify-center mr-3 shadow-lg">
+                            <i class="fas fa-lock text-sm"></i>
+                        </span>
+                        Mot de passe
+                    </label>
+                    <div class="relative">
+                        <input 
+                            type="password" 
+                            name="password" 
+                            id="password" 
+                            required
+                            class="block w-full px-6 py-4 border-2 border-gray-200 rounded-2xl placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-purple-200 focus:border-purple-500 transition-all duration-300 text-gray-900 font-semibold hover:border-gray-300 group-hover:shadow-lg bg-white"
+                            placeholder="••••••••••"
+                        >
+                        <div class="absolute inset-y-0 right-0 flex items-center pr-5 pointer-events-none">
+                            <i class="fas fa-shield-alt text-gray-300 group-hover:text-purple-400 transition-colors"></i>
+                        </div>
                     </div>
-                </form>
+                </div>
+
+                <!-- Options élégantes -->
+                <div class="flex items-center justify-between pt-2">
+                    <label class="flex items-center cursor-pointer group/check">
+                        <input 
+                            id="remember" 
+                            name="remember" 
+                            type="checkbox" 
+                            class="w-5 h-5 text-purple-600 focus:ring-purple-500 border-gray-300 rounded cursor-pointer transition-all"
+                        >
+                        <span class="ml-3 text-sm font-semibold text-gray-700 group-hover/check:text-purple-600 transition-colors">
+                            Se souvenir de moi
+                        </span>
+                    </label>
+                    <a href="#" class="text-sm font-bold text-purple-600 hover:text-purple-700 transition-colors hover:underline">
+                        Mot de passe oublié ?
+                    </a>
+                </div>
+
+                <!-- Bouton de connexion spectaculaire -->
+                <div class="pt-4">
+                    <button 
+                        type="submit" 
+                        class="group relative w-full flex justify-center items-center py-5 px-6 border-0 rounded-2xl text-lg font-bold text-white bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:from-blue-700 hover:via-purple-700 hover:to-pink-700 focus:outline-none focus:ring-4 focus:ring-purple-300 transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 shadow-2xl hover:shadow-purple-500/50 overflow-hidden"
+                    >
+                        <span class="absolute inset-0 w-full h-full bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 opacity-0 group-hover:opacity-30 transition-opacity duration-300"></span>
+                        <span class="relative flex items-center gap-3">
+                            <i class="fas fa-sign-in-alt text-xl group-hover:translate-x-1 transition-transform"></i>
+                            Se connecter maintenant
+                            <i class="fas fa-arrow-right text-lg group-hover:translate-x-2 transition-transform"></i>
+                        </span>
+                    </button>
+                </div>
+
+                <!-- Séparateur stylé -->
+                <div class="relative py-4">
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="w-full border-t-2 border-gray-200"></div>
+                    </div>
+                    <div class="relative flex justify-center">
+                        <span class="px-6 bg-white text-gray-500 font-bold uppercase text-xs tracking-wider">
+                            Nouveau sur la plateforme ?
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Lien inscription premium -->
+                <div class="text-center">
+                    <a href="{% url 'register' %}" class="group inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-green-50 to-emerald-50 hover:from-green-100 hover:to-emerald-100 border-2 border-green-200 hover:border-green-300 rounded-2xl font-bold text-green-700 hover:text-green-800 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
+                        <i class="fas fa-user-plus text-xl group-hover:rotate-12 transition-transform"></i>
+                        <span>Créer un compte gratuit</span>
+                        <i class="fas fa-arrow-right group-hover:translate-x-2 transition-transform"></i>
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Badge de sécurité -->
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-3 text-sm text-gray-600 mt-6">
+            <div class="flex items-center gap-2 bg-white/50 backdrop-blur-sm px-4 py-2 rounded-full shadow-md">
+                <i class="fas fa-shield-alt text-green-600"></i>
+                <span class="font-semibold">Connexion sécurisée SSL</span>
             </div>
-
-            <div class="flex flex-col sm:flex-row items-center justify-center gap-3 text-sm text-gray-600 mt-6">
-                <div class="flex items-center gap-2 bg-white/50 backdrop-blur-sm px-4 py-2 rounded-full shadow-md">
-                    <i class="fas fa-shield-alt text-green-600"></i>
-                    <span class="font-semibold">Connexion sécurisée SSL</span>
-                </div>
-                <div class="flex items-center gap-2 bg-white/50 backdrop-blur-sm px-4 py-2 rounded-full shadow-md">
-                    <i class="fas fa-lock text-blue-600"></i>
-                    <span class="font-semibold">Données cryptées</span>
-                </div>
+            <div class="flex items-center gap-2 bg-white/50 backdrop-blur-sm px-4 py-2 rounded-full shadow-md">
+                <i class="fas fa-lock text-blue-600"></i>
+                <span class="font-semibold">Données cryptées</span>
             </div>
         </div>
     </div>
 
-    <div class="hidden lg:flex flex-1 items-center justify-center py-12 bg-gradient-to-br from-gray-900 via-purple-900 to-black relative">
+    <!-- Partie droite - Photo des fondateurs -->
+    <div class="flex-1 flex items-center justify-center py-12 bg-gradient-to-br from-gray-900 via-purple-900 to-black relative">
+        <!-- Décorations -->
         <div class="absolute inset-0 bg-black/40"></div>
         <div class="absolute top-20 left-20 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
         <div class="absolute bottom-20 right-20 w-96 h-96 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
 
+        <!-- Contenu image -->
         <div class="relative z-10 text-center px-6">
             <div class="relative inline-block group mb-6">
                 <div class="absolute inset-0 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 rounded-3xl blur-2xl opacity-50 group-hover:opacity-75 transition duration-500 animate-pulse-slow"></div>
@@ -207,87 +163,3 @@
         </div>
     </div>
 </div>
-
-<style>
-    @keyframes blob {
-        0%, 100% {
-            transform: translate(0, 0) scale(1);
-        }
-        25% {
-            transform: translate(20px, -50px) scale(1.1);
-        }
-        50% {
-            transform: translate(-20px, 20px) scale(0.9);
-        }
-        75% {
-            transform: translate(50px, 50px) scale(1.05);
-        }
-    }
-    
-    .animate-blob {
-        animation: blob 10s infinite;
-    }
-    
-    .animation-delay-2000 {
-        animation-delay: 2s;
-    }
-    
-    .animation-delay-4000 {
-        animation-delay: 4s;
-    }
-    
-    .animate-pulse-slow {
-        animation: pulse-slow 4s ease-in-out infinite;
-    }
-    
-    @keyframes pulse-slow {
-        0%, 100% {
-            opacity: 0.5;
-            transform: scale(1);
-        }
-        50% {
-            opacity: 0.8;
-            transform: scale(1.05);
-        }
-    }
-    
-    .animate-fade-in {
-        animation: fadeIn 0.5s ease-out;
-    }
-    
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: translateY(-10px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    /* Effet de brillance */
-    @keyframes shine {
-        0% {
-            left: -100%;
-        }
-        100% {
-            left: 100%;
-        }
-    }
-    
-    button[type="submit"]::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-    }
-    
-    button[type="submit"]:hover::after {
-        animation: shine 0.8s;
-    }
-</style>
-{% endblock %}
