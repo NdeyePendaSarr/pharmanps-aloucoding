@@ -1,4 +1,4 @@
-# Fichier: sales/views.py (Corrigé)
+# Fichier: sales/views.py 
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -189,7 +189,7 @@ def customer_create(request):
                 medical_conditions=request.POST.get('medical_conditions', ''),
                 credit_limit=request.POST.get('credit_limit', 0),
             )
-            messages.success(request, f'Client "{customer.full_name}" créé avec succès ! ✅')
+            messages.success(request, f'Client "{customer.full_name}" créé avec succès !')
             return redirect('customer_list')
         except Exception as e:
             messages.error(request, f'Erreur : {str(e)}')
