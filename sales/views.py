@@ -1,3 +1,5 @@
+# Fichier: sales/views.py (Corrigé)
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -52,7 +54,7 @@ def search_medication(request):
 
 @login_required
 def create_sale(request):
-    """Créer une vente"""
+    """Créer une vente (API de Finalisation)"""
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
@@ -65,6 +67,8 @@ def create_sale(request):
                 payment_method=data.get('payment_method'),
                 amount_paid=data.get('amount_paid', 0),
                 created_by=request.user,
+                # 🌟 CORRECTION 1 : Statut forcé à 'completee' lors de la finalisation
+                status='completee',
             )
             
             # Créer les lignes de vente
@@ -99,8 +103,9 @@ def create_sale(request):
 
 @login_required
 def sale_list(request):
-    """Liste des ventes"""
-    sales = Sale.objects.all()
+    """Liste des ventes (Historique)"""
+    # 🌟 CORRECTION 2 : Filtrer UNIQUEMENT les ventes COMPLÉTÉES pour l'historique
+    sales = Sale.objects.filter(status='completee').order_by('-created_at')
     
     # Filtres
     search = request.GET.get('search', '')
