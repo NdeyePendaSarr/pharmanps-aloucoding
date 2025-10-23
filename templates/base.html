@@ -32,6 +32,7 @@
     <nav class="bg-white bg-opacity-90 backdrop-blur-lg shadow-xl fixed w-full top-0 z-50 border-b border-gray-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
+                
                 <div class="flex items-center">
                     <div class="flex-shrink-0 flex items-center group">
                         <div class="bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl p-2 mr-3 shadow-lg group-hover:scale-110 transition-transform duration-300">
@@ -44,45 +45,49 @@
                     </div>
                 </div>
 
-                <div class="hidden md:flex items-center space-x-2">
-                    <a href="{% url 'dashboard' %}" class="nav-link text-gray-700 hover:text-blue-600 hover:bg-blue-50 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200">
-                        <i class="fas fa-home mr-2"></i>Dashboard
-                    </a>
-                    <a href="{% url 'medication_list' %}" class="nav-link text-gray-700 hover:text-green-600 hover:bg-green-50 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200">
-                        <i class="fas fa-capsules mr-2"></i>Médicaments
-                    </a>
-                    <a href="{% url 'pos' %}" class="nav-link text-gray-700 hover:text-purple-600 hover:bg-purple-50 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200">
-                        <i class="fas fa-cash-register mr-2"></i>Caisse
-                    </a>
-                    <a href="{% url 'sale_list' %}" class="nav-link text-gray-700 hover:text-orange-600 hover:bg-orange-50 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200">
-                        <i class="fas fa-receipt mr-2"></i>Ventes
-                    </a>
-                    <a href="{% url 'customer_list' %}" class="nav-link text-gray-700 hover:text-pink-600 hover:bg-pink-50 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200">
-                        <i class="fas fa-users mr-2"></i>Clients
-                    </a>
-                </div>
+                <div class="flex items-center space-x-4"> 
+                    
+                    <div class="hidden md:flex items-center space-x-2">
+                        <a href="{% url 'dashboard' %}" class="nav-link flex items-center text-gray-700 hover:text-blue-600 hover:bg-blue-50 px-3 py-2 rounded-xl text-sm font-semibold transition-all duration-200">
+                            <i class="fas fa-home mr-1"></i>Dashboard
+                        </a>
+                        <a href="{% url 'medication_list' %}" class="nav-link flex items-center text-gray-700 hover:text-green-600 hover:bg-green-50 px-3 py-2 rounded-xl text-sm font-semibold transition-all duration-200">
+                            <i class="fas fa-capsules mr-1"></i>Médicaments
+                        </a>
+                        <a href="{% url 'sale_list' %}" class="nav-link flex items-center text-gray-700 hover:text-orange-600 hover:bg-orange-50 px-3 py-2 rounded-xl text-sm font-semibold transition-all duration-200">
+                            <i class="fas fa-receipt mr-1"></i>Ventes
+                        </a>
+                        <a href="{% url 'customer_list' %}" class="nav-link flex items-center text-gray-700 hover:text-pink-600 hover:bg-pink-50 px-3 py-2 rounded-xl text-sm font-semibold transition-all duration-200">
+                            <i class="fas fa-users mr-1"></i>Clients
+                        </a>
+                        <a href="{% url 'pos' %}" class="nav-link flex items-center text-gray-700 hover:text-purple-600 hover:bg-purple-50 px-3 py-2 rounded-xl text-sm font-semibold transition-all duration-200">
+                            <i class="fas fa-cash-register mr-1"></i>Caisse
+                        </a>
+                    </div>
 
-                <div class="flex items-center space-x-3">
-                    
-                    <button id="menu-button" type="button" class="md:hidden p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500 transition-all duration-200" aria-controls="mobile-menu-drawer" aria-expanded="false">
-                        <i id="menu-icon" class="fas fa-bars text-xl"></i>
-                    </button>
-                    
-                    <div class="relative group hidden md:block">
-                        <div class="flex items-center space-x-3 cursor-pointer bg-gradient-to-r from-blue-50 to-purple-50 px-4 py-2 rounded-xl hover:shadow-lg transition-all duration-200">
-                            <div class="bg-gradient-to-br from-blue-600 to-purple-600 rounded-full w-10 h-10 flex items-center justify-center shadow-lg">
-                                <i class="fas fa-user text-white"></i>
-                            </div>
-                            <div class="hidden md:block">
-                                <p class="text-sm font-bold text-gray-900">{{ user.username }}</p>
-                                <p class="text-xs text-gray-500">Administrateur</p>
+                    <div class="flex items-center space-x-3">
+                        
+                        <div class="relative group hidden md:block">
+                            <div class="flex items-center space-x-3 cursor-pointer bg-gradient-to-r from-blue-50 to-purple-50 px-4 py-2 rounded-xl hover:shadow-lg transition-all duration-200">
+                                <div class="bg-gradient-to-br from-blue-600 to-purple-600 rounded-full w-10 h-10 flex items-center justify-center shadow-lg">
+                                    <i class="fas fa-user text-white"></i>
+                                </div>
+                                <div class="hidden md:block">
+                                    <p class="text-sm font-bold text-gray-900">{{ user.username }}</p>
+                                    <p class="text-xs text-gray-500">Administrateur</p>
+                                </div>
                             </div>
                         </div>
+                        
+                        <a href="{% url 'logout' %}" class="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105">
+                            <i class="fas fa-sign-out-alt mr-2"></i>
+                            <span class="hidden md:inline">Déconnexion</span>
+                        </a>
+
+                        <button id="menu-button" type="button" class="md:hidden p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500 transition-all duration-200" aria-controls="mobile-menu-drawer" aria-expanded="false">
+                            <i id="menu-icon" class="fas fa-bars text-xl"></i>
+                        </button>
                     </div>
-                    <a href="{% url 'logout' %}" class="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105">
-                        <i class="fas fa-sign-out-alt mr-2"></i>
-                        <span class="hidden md:inline">Déconnexion</span>
-                    </a>
                 </div>
             </div>
         </div>
@@ -107,6 +112,10 @@
                 </a>
                 <a href="{% url 'customer_list' %}" class="flex items-center text-gray-700 hover:text-pink-600 hover:bg-pink-50 px-3 py-2 rounded-lg text-base font-semibold transition-all duration-200">
                     <i class="fas fa-users mr-3 w-5"></i>Clients
+                </a>
+                
+                <a href="{% url 'logout' %}" class="flex items-center text-red-700 hover:text-red-900 hover:bg-red-50 px-3 py-2 rounded-lg text-base font-semibold transition-all duration-200 mt-4 border-t pt-4">
+                    <i class="fas fa-sign-out-alt mr-3 w-5"></i>Déconnexion
                 </a>
             </div>
         </div>
