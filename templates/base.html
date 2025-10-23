@@ -32,24 +32,21 @@
 <body class="bg-gray-50">
     
     {% if user.is_authenticated %}
-    <!-- Navbar moderne avec glassmorphism -->
     <nav class="bg-white bg-opacity-90 backdrop-blur-lg shadow-xl fixed w-full top-0 z-50 border-b border-gray-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
-                <!-- Logo et titre avec animation -->
+                
                 <div class="flex items-center">
                     <div class="flex-shrink-0 flex items-center group">
                         <div class="bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl p-2 mr-3 shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            <i class="fas fa-pills text-white text-2xl"></i>
-                        </div>
+                            <i class="fas fa-pills text-white text-xl sm:text-2xl"></i> </div>
                         <div>
-                            <span class="text-xl font-extrabold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">PharmaNPS-Alou</span>
+                            <span class="text-xl sm:text-lg font-extrabold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">PharmaNPS-Alou</span>
                             <p class="text-xs text-gray-500">Manager</p>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Menu navigation avec effets hover -->
                 <div class="hidden md:flex items-center space-x-2">
                     <a href="{% url 'dashboard' %}" class="nav-link text-gray-700 hover:text-blue-600 hover:bg-blue-50 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200">
                         <i class="fas fa-home mr-2"></i>Dashboard
@@ -68,9 +65,13 @@
                     </a>
                 </div>
                 
-                <!-- User menu avec avatar -->
                 <div class="flex items-center space-x-3">
-                    <div class="relative group">
+                    
+                    <button id="menu-button" type="button" class="md:hidden p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500 transition-all duration-200" aria-controls="mobile-menu-drawer" aria-expanded="false">
+                        <i id="menu-icon" class="fas fa-bars text-xl"></i>
+                    </button>
+                    
+                    <div class="relative group hidden md:block">
                         <div class="flex items-center space-x-3 cursor-pointer bg-gradient-to-r from-blue-50 to-purple-50 px-4 py-2 rounded-xl hover:shadow-lg transition-all duration-200">
                             <div class="bg-gradient-to-br from-blue-600 to-purple-600 rounded-full w-10 h-10 flex items-center justify-center shadow-lg">
                                 <i class="fas fa-user text-white"></i>
@@ -88,16 +89,82 @@
                 </div>
             </div>
         </div>
+        
+        <div class="md:hidden fixed inset-0 z-40 transform -translate-x-full transition-transform duration-300 ease-in-out" id="mobile-menu-drawer">
+            <div class="absolute inset-0 bg-gray-900 bg-opacity-75" onclick="closeMenu()"></div>
+            
+            <div class="relative bg-white h-full w-64 shadow-2xl p-4 flex flex-col space-y-2">
+                
+                <p class="text-sm font-extrabold text-gray-500 uppercase mb-4 border-b pb-2">Navigation</p>
+
+                <a href="{% url 'dashboard' %}" class="flex items-center text-gray-700 hover:text-blue-600 hover:bg-blue-50 px-3 py-2 rounded-lg text-base font-semibold transition-all duration-200">
+                    <i class="fas fa-home mr-3 w-5"></i>Dashboard
+                </a>
+                <a href="{% url 'medication_list' %}" class="flex items-center text-gray-700 hover:text-green-600 hover:bg-green-50 px-3 py-2 rounded-lg text-base font-semibold transition-all duration-200">
+                    <i class="fas fa-capsules mr-3 w-5"></i>Médicaments
+                </a>
+                <a href="{% url 'pos' %}" class="flex items-center text-gray-700 hover:text-purple-600 hover:bg-purple-50 px-3 py-2 rounded-lg text-base font-semibold transition-all duration-200">
+                    <i class="fas fa-cash-register mr-3 w-5"></i>Caisse
+                </a>
+                <a href="{% url 'sale_list' %}" class="flex items-center text-gray-700 hover:text-orange-600 hover:bg-orange-50 px-3 py-2 rounded-lg text-base font-semibold transition-all duration-200">
+                    <i class="fas fa-receipt mr-3 w-5"></i>Ventes
+                </a>
+                <a href="{% url 'customer_list' %}" class="flex items-center text-gray-700 hover:text-pink-600 hover:bg-pink-50 px-3 py-2 rounded-lg text-base font-semibold transition-all duration-200">
+                    <i class="fas fa-users mr-3 w-5"></i>Clients
+                </a>
+
+                </div>
+        </div>
+
     </nav>
     
-    <!-- Sidebar (pour mobile) -->
-    <div class="md:hidden fixed inset-0 z-40 hidden" id="mobile-menu">
-        <div class="fixed inset-0 bg-gray-600 bg-opacity-75"></div>
-        <div class="fixed inset-y-0 left-0 max-w-xs w-full bg-white shadow-xl">
-            <!-- Menu mobile à implémenter -->
-        </div>
+    <div style="padding-top: 4rem;">
+        {% block content %}{% endblock %}
     </div>
-    
+
+    {% endif %}
+
+    <script>
+        const menuButton = document.getElementById('menu-button');
+        const mobileMenuDrawer = document.getElementById('mobile-menu-drawer');
+        const menuIcon = document.getElementById('menu-icon');
+
+        function toggleMenu() {
+            const isMenuOpen = mobileMenuDrawer.classList.contains('translate-x-0');
+            
+            if (isMenuOpen) {
+                // Fermer le menu
+                mobileMenuDrawer.classList.remove('translate-x-0');
+                mobileMenuDrawer.classList.add('-translate-x-full');
+                menuIcon.classList.remove('fa-times'); // Changer l'icône en hamburger
+                menuIcon.classList.add('fa-bars');
+            } else {
+                // Ouvrir le menu
+                mobileMenuDrawer.classList.remove('-translate-x-full');
+                mobileMenuDrawer.classList.add('translate-x-0');
+                menuIcon.classList.remove('fa-bars'); // Changer l'icône en croix (fermeture)
+                menuIcon.classList.add('fa-times');
+            }
+        }
+        
+        // Fonction globale pour fermer le menu (utilisée par la superposition)
+        window.closeMenu = function() {
+            mobileMenuDrawer.classList.remove('translate-x-0');
+            mobileMenuDrawer.classList.add('-translate-x-full');
+            menuIcon.classList.remove('fa-times');
+            menuIcon.classList.add('fa-bars');
+        }
+
+        menuButton.addEventListener('click', toggleMenu);
+
+        // Optionnel : Fermer le menu si on clique sur un lien de navigation
+        const navLinks = mobileMenuDrawer.querySelectorAll('a');
+        navLinks.forEach(link => {
+            link.addEventListener('click', closeMenu);
+        });
+    </script>
+</body>
+</html>
     <!-- Contenu principal -->
     <main class="pt-20 pb-10 px-4 sm:px-6 lg:px-8">
         <div class="max-w-7xl mx-auto">
