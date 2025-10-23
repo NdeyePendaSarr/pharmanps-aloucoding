@@ -73,7 +73,7 @@
                                 type="text"
                                 name="{{ form.name.name }}"
                                 id="{{ form.name.id_for_label }}"
-                                <!-- MODIFICATION CLÉ ICI : Utilisez form.name.value directement -->
+                                <!-- CORRECTION CLÉ : Injection de la valeur de manière propre -->
                                 value="{{ form.name.value|default_if_none:'' }}"
                                 required
                                 class="w-full px-6 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-200 focus:border-purple-500 transition-all duration-300 text-gray-800 font-medium placeholder-gray-400 hover:border-gray-300"
@@ -103,7 +103,7 @@
                                 rows="5"
                                 class="w-full px-6 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-200 focus:border-purple-500 transition-all duration-300 text-gray-800 font-medium placeholder-gray-400 hover:border-gray-300 resize-none"
                                 placeholder="Décrivez brièvement cette catégorie et son utilité..."
-                            ><!-- MODIFICATION CLÉ ICI : Utilisez form.description.value directement -->{{ form.description.value|default_if_none:"" }}</textarea>
+                            ><!-- CORRECTION CLÉ : Injection de la valeur de manière propre -->{{ form.description.value|default_if_none:"" }}</textarea>
                             <div class="absolute top-4 right-4 pointer-events-none">
                                 <i class="fas fa-comment-dots text-gray-300"></i>
                             </div>
