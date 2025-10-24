@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Q
 from .models import Medication, Category, StockMovement
+from django.db.models import Sum # Non utilisé ici mais bonne pratique de l'avoir si besoin d'agrégation
 
 
 @login_required
@@ -125,6 +126,7 @@ def medication_update(request, pk):
             # Gérer l'image si présente
             if request.FILES.get('image'):
                 medication.image = request.FILES.get('image')
+                medication.save()
             
             medication.save()
             
@@ -165,9 +167,16 @@ def category_list(request):
     """Liste des catégories"""
     categories = Category.objects.all()
     
+    # 🚨 DÉBUT DE LA MODIFICATION 🚨
+    # Calcule le nombre total de médicaments dans la base de données
+    total_medications = Medication.objects.count()
+    
     context = {
         'categories': categories,
+        'total_medications': total_medications, # Ajout de la variable dans le contexte
     }
+    # 🚨 FIN DE LA MODIFICATION 🚨
+    
     return render(request, 'medications/category_list.html', context)
 
 
