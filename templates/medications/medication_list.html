@@ -4,35 +4,48 @@
 
 {% block content %}
 <div class="fade-in">
-    <!-- En-tête avec gradient moderne -->
     <div class="mb-8 relative overflow-hidden rounded-3xl bg-gradient-to-br from-green-600 via-emerald-600 to-teal-600 p-8 shadow-2xl">
         <div class="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full blur-3xl"></div>
         <div class="absolute bottom-0 left-0 w-96 h-96 bg-teal-400 opacity-10 rounded-full blur-3xl"></div>
         
-        <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-    <div>
-        <h1 class="text-3xl md:text-4xl font-extrabold text-white mb-3">
-            <i class="fas fa-pills mr-3"></i>
-            Gestion des Médicaments
-        </h1>
-        <p class="text-green-100 text-lg">Gérez votre stock de médicaments</p>
-    </div>
-    <div class="flex gap-3">
-        <a href="{% url 'category_list' %}" class="bg-white bg-opacity-20 backdrop-blur-lg hover:bg-opacity-30 text-white px-6 py-3 rounded-2xl font-bold transition-all transform hover:scale-105 shadow-lg border border-white border-opacity-30">
-            <i class="fas fa-tags mr-2"></i>Catégories
-        </a>
-        <a href="{% url 'medication_create' %}" class="bg-white hover:bg-gray-100 text-green-600 px-6 py-3 rounded-2xl font-bold transition-all transform hover:scale-105 shadow-lg">
-            <i class="fas fa-plus mr-2"></i>Nouveau
-        </a>
-    </div>
-</div>
+        <div class="relative z-10">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h1 class="text-3xl md:text-4xl font-extrabold text-white mb-3">
+                        <i class="fas fa-pills mr-3"></i>
+                        Gestion des Médicaments
+                    </h1>
+                    <p class="text-green-100 text-lg">Gérez votre stock de médicaments</p>
+                </div>
+                
+                <div class="hidden md:flex gap-3">
+                    <a href="{% url 'category_list' %}" class="bg-white bg-opacity-20 backdrop-blur-lg hover:bg-opacity-30 text-white px-6 py-3 rounded-2xl font-bold transition-all transform hover:scale-105 shadow-lg border border-white border-opacity-30">
+                        <i class="fas fa-tags mr-2"></i>Catégories
+                    </a>
+                    <a href="{% url 'medication_create' %}" class="bg-white hover:bg-gray-100 text-green-600 px-6 py-3 rounded-2xl font-bold transition-all transform hover:scale-105 shadow-lg">
+                        <i class="fas fa-plus mr-2"></i>Nouveau
+                    </a>
+                </div>
+            </div>
+            
+            <div class="flex md:hidden gap-3 mt-6 justify-center sm:justify-start">
+                
+                <a href="{% url 'category_list' %}" class="flex-1 min-w-0 flex items-center justify-center bg-white bg-opacity-20 backdrop-blur-lg hover:bg-opacity-30 text-white p-3 rounded-xl font-bold text-base transition-all transform hover:scale-105 shadow-lg border border-white border-opacity-30">
+                    <i class="fas fa-tags mr-2 text-xl"></i>
+                    <span>Catégories</span>
+                </a>
+                
+                <a href="{% url 'medication_create' %}" class="flex-1 min-w-0 flex items-center justify-center bg-white hover:bg-gray-100 text-green-600 p-3 rounded-xl font-bold text-base transition-all transform hover:scale-105 shadow-lg">
+                    <i class="fas fa-plus mr-2 text-xl"></i>
+                    <span>Nouveau</span>
+                </a>
+            </div>
+        </div>
     </div>
 
-    <!-- Barre de recherche et filtres moderne -->
     <div class="bg-white bg-opacity-90 backdrop-blur-xl rounded-3xl shadow-xl p-6 mb-8 border border-gray-100">
         <form method="GET" class="space-y-4">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <!-- Recherche -->
                 <div class="md:col-span-2">
                     <label class="block text-sm font-bold text-gray-700 mb-2">
                         <i class="fas fa-search mr-2 text-blue-500"></i>Rechercher
@@ -46,7 +59,6 @@
                     >
                 </div>
 
-                <!-- Catégorie -->
                 <div>
                     <label class="block text-sm font-bold text-gray-700 mb-2">
                         <i class="fas fa-tags mr-2 text-purple-500"></i>Catégorie
@@ -64,7 +76,6 @@
                     </select>
                 </div>
 
-                <!-- Stock -->
                 <div>
                     <label class="block text-sm font-bold text-gray-700 mb-2">
                         <i class="fas fa-box mr-2 text-orange-500"></i>État du stock
@@ -98,12 +109,10 @@
         </form>
     </div>
 
-    <!-- Liste des médicaments en cards -->
     {% if medications %}
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {% for med in medications %}
         <div class="group bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden border border-gray-100">
-            <!-- Image -->
             <div class="relative h-48 overflow-hidden">
                 {% if med.image %}
                 <img src="{{ med.image.url }}" alt="{{ med.name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
@@ -137,7 +146,6 @@
                 </div>
                 {% endif %}
                 
-                <!-- Badges -->
                 <div class="absolute top-3 left-3 flex flex-col gap-2">
                     {% if med.requires_prescription %}
                     <span class="bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
@@ -161,21 +169,17 @@
                 </div>
             </div>
 
-            <!-- Contenu -->
             <div class="p-6">
-                <!-- Catégorie -->
                 <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-xs font-bold">
                     {{ med.category.name|default:"N/A" }}
                 </span>
 
-                <!-- Nom -->
                 <h3 class="text-xl font-bold text-gray-900 mt-3 mb-2 group-hover:text-blue-600 transition">
                     {{ med.name }}
                 </h3>
                 <p class="text-sm text-gray-600 mb-1">{{ med.dci }}</p>
                 <p class="text-xs text-gray-500 mb-4">{{ med.form }} - {{ med.dosage }}</p>
 
-                <!-- Prix et stock -->
                 <div class="flex justify-between items-center mb-4 pb-4 border-b border-gray-100">
                     <div>
                         <p class="text-2xl font-bold text-green-600">{{ med.selling_price|floatformat:0 }}</p>
@@ -189,7 +193,6 @@
                     </div>
                 </div>
 
-                <!-- Actions -->
                 <div class="flex gap-2">
                     <a href="{% url 'medication_detail' med.pk %}" class="flex-1 bg-blue-100 hover:bg-blue-200 text-blue-700 px-4 py-3 rounded-xl font-bold text-center transition-all transform hover:scale-105" title="Détails">
                         <i class="fas fa-eye mr-2"></i>Voir
