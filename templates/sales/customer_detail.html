@@ -45,9 +45,10 @@
     </div>
     
     <div class="absolute top-4 md:top-8 right-4 md:right-8">
-        <button class="bg-white bg-opacity-20 backdrop-blur-lg hover:bg-opacity-30 text-white px-4 py-2 md:px-6 md:py-3 rounded-xl md:rounded-2xl font-bold transition-all transform hover:scale-105 shadow-lg border border-white border-opacity-30 text-sm md:text-base">
+        <!-- MODIFICATION 1 : Ajout de l'URL pour la modification du client -->
+        <a href="{% url 'customer_update' customer.pk %}" class="bg-white bg-opacity-20 backdrop-blur-lg hover:bg-opacity-30 text-white px-4 py-2 md:px-6 md:py-3 rounded-xl md:rounded-2xl font-bold transition-all transform hover:scale-105 shadow-lg border border-white border-opacity-30 text-sm md:text-base">
             <i class="fas fa-edit mr-2"></i>Modifier
-        </button>
+        </a>
     </div>
 </div>
 
@@ -197,7 +198,7 @@
     </div>
     <div class="lg:col-span-1 space-y-6">
         </div>
-</div>        <!-- Panneau latéral -->
+</div>        <!-- Panneau latéral -->
         <div class="space-y-6">
             
             <!-- Crédit -->
@@ -240,9 +241,10 @@
                     <a href="{% url 'pos' %}" class="block w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-6 py-4 rounded-2xl font-bold text-center transition-all transform hover:scale-105 shadow-lg">
                         <i class="fas fa-shopping-cart mr-2"></i>Nouvelle vente
                     </a>
-                    <button class="block w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 py-4 rounded-2xl font-bold transition-all transform hover:scale-105 shadow-lg">
+                    <!-- MODIFICATION 2 : Transformation du bouton en lien (<a>) et ajout de l'URL pour les factures -->
+                    <a href="{% url 'customer_sales' customer.pk %}" class="block w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 py-4 rounded-2xl font-bold text-center transition-all transform hover:scale-105 shadow-lg">
                         <i class="fas fa-file-invoice mr-2"></i>Voir factures
-                    </button>
+                    </a>
                 </div>
             </div>
         </div>

@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Modifier Client : {{ customer.full_name }}{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-4 max-w-4xl">
+    <div class="bg-white shadow-xl rounded-lg p-6">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6 border-b pb-2">
+            Modification du Client : <span class="text-indigo-600">{{ customer.full_name }}</span>
+        </h1>
+
+        <form method="post" action="{% url 'customer_update' pk=customer.pk %}" class="space-y-6">
+            {% csrf_token %}
+
+            <!-- Informations Personnelles -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label for="first_name" class="block text-sm font-medium text-gray-700">Prénom *</label>
+                    <input type="text" name="first_name" id="first_name" required 
+                           value="{{ customer.first_name }}"
+                           class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                <div>
+                    <label for="last_name" class="block text-sm font-medium text-gray-700">Nom *</label>
+                    <input type="text" name="last_name" id="last_name" required 
+                           value="{{ customer.last_name }}"
+                           class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+            </div>
+
+            <!-- Contacts -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label for="phone" class="block text-sm font-medium text-gray-700">Téléphone *</label>
+                    <input type="tel" name="phone" id="phone" required 
+                           value="{{ customer.phone }}"
+                           class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                    <input type="email" name="email" id="email" 
+                           value="{{ customer.email|default:'' }}"
+                           class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+            </div>
+
+            <!-- Adresse et Date de Naissance -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                 <div>
+                    <label for="date_of_birth" class="block text-sm font-medium text-gray-700">Date de Naissance</label>
+                    <input type="date" name="date_of_birth" id="date_of_birth" 
+                           value="{{ customer.date_of_birth|date:'Y-m-d'|default:'' }}"
+                           class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                <div>
+                    <label for="address" class="block text-sm font-medium text-gray-700">Adresse</label>
+                    <input type="text" name="address" id="address" 
+                           value="{{ customer.address|default:'' }}"
+                           class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+            </div>
+
+            <!-- Type et Limite de Crédit -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label for="customer_type" class="block text-sm font-medium text-gray-700">Type de Client *</label>
+                    <select name="customer_type" id="customer_type" required
+                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:ring-indigo-500 focus:border-indigo-500">
+                        <option value="particulier" {% if customer.customer_type == 'particulier' %}selected{% endif %}>Particulier</option>
+                        <option value="entreprise" {% if customer.customer_type == 'entreprise' %}selected{% endif %}>Entreprise</option>
+                        <option value="institution" {% if customer.customer_type == 'institution' %}selected{% endif %}>Institution</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="credit_limit" class="block text-sm font-medium text-gray-700">Limite de Crédit</label>
+                    <input type="number" step="0.01" name="credit_limit" id="credit_limit" 
+                           value="{{ customer.credit_limit|default:0 }}"
+                           class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+            </div>
+
+            <!-- Conditions Médicales -->
+            <div>
+                <label for="medical_conditions" class="block text-sm font-medium text-gray-700">Conditions Médicales (Notes)</label>
+                <textarea name="medical_conditions" id="medical_conditions" rows="3"
+                          class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:ring-indigo-500 focus:border-indigo-500">{{ customer.medical_conditions|default:'' }}</textarea>
+                <p class="mt-2 text-xs text-gray-500">Informations importantes à connaître (allergies, traitements en cours, etc.).</p>
+            </div>
+
+            <!-- Boutons d'action -->
+            <div class="flex justify-end space-x-3 pt-4">
+                <a href="{% url 'customer_detail' pk=customer.pk %}" 
+                   class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Annuler
+                </a>
+                <button type="submit"
+                        class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Enregistrer les Modifications
+                </button>
+            </div>
+        </form>
+
+    </div>
+</div>
+{% endblock %}

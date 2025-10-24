@@ -1,5 +1,3 @@
-# Fichier: sales/views.py 
-
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -67,7 +65,7 @@ def create_sale(request):
                 payment_method=data.get('payment_method'),
                 amount_paid=data.get('amount_paid', 0),
                 created_by=request.user,
-                # 🌟 CORRECTION 1 : Statut forcé à 'completee' lors de la finalisation
+                # Statut forcé à 'completee' lors de la finalisation
                 status='completee',
             )
             
@@ -104,7 +102,7 @@ def create_sale(request):
 @login_required
 def sale_list(request):
     """Liste des ventes (Historique)"""
-    # 🌟 CORRECTION 2 : Filtrer UNIQUEMENT les ventes COMPLÉTÉES pour l'historique
+    # Filtrer UNIQUEMENT les ventes COMPLÉTÉES pour l'historique
     sales = Sale.objects.filter(status='completee').order_by('-created_at')
     
     # Filtres
@@ -187,14 +185,48 @@ def customer_create(request):
                 date_of_birth=request.POST.get('date_of_birth') or None,
                 customer_type=request.POST.get('customer_type', 'particulier'),
                 medical_conditions=request.POST.get('medical_conditions', ''),
-                credit_limit=request.POST.get('credit_limit', 0),
+                # Assurez-vous que credit_limit est bien un nombre ou 0
+                credit_limit=request.POST.get('credit_limit') or 0,
             )
             messages.success(request, f'Client "{customer.full_name}" créé avec succès !')
             return redirect('customer_list')
         except Exception as e:
             messages.error(request, f'Erreur : {str(e)}')
     
+    # Template pour la création
     return render(request, 'sales/customer_form.html')
+
+
+@login_required
+def customer_update(request, pk):
+    """Modifier un client existant"""
+    customer = get_object_or_404(Customer, pk=pk)
+
+    if request.method == 'POST':
+        try:
+            # Mise à jour des champs à partir de request.POST
+            customer.first_name = request.POST.get('first_name')
+            customer.last_name = request.POST.get('last_name')
+            customer.phone = request.POST.get('phone')
+            customer.email = request.POST.get('email', '')
+            customer.address = request.POST.get('address', '')
+            # Utiliser or None pour les champs DateField/DecimalField qui peuvent être vides
+            customer.date_of_birth = request.POST.get('date_of_birth') or None
+            customer.customer_type = request.POST.get('customer_type', 'particulier')
+            customer.medical_conditions = request.POST.get('medical_conditions', '')
+            customer.credit_limit = request.POST.get('credit_limit') or 0
+            
+            customer.save()
+            messages.success(request, f'Client "{customer.full_name}" mis à jour avec succès !')
+            return redirect('customer_detail', pk=customer.pk)
+        except Exception as e:
+            messages.error(request, f'Erreur lors de la mise à jour : {str(e)}')
+
+    context = {
+        'customer': customer,
+    }
+    # Utilise le template de modification dédié, comme demandé
+    return render(request, 'sales/customer_update.html', context)
 
 
 @login_required
