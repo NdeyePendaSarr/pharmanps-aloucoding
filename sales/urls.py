@@ -15,7 +15,5 @@ urlpatterns = [
     # Clients
     path('customers/', views.customer_list, name='customer_list'),
     path('customers/create/', views.customer_create, name='customer_create'),
-    # Nouvelle URL pour la mise à jour du client
-    path('customers/<int:pk>/update/', views.customer_update, name='customer_update'), 
     path('customers/<int:pk>/', views.customer_detail, name='customer_detail'),
 ]
