@@ -1,3 +1,5 @@
+# Fichier: sales/urls.py
+
 from django.urls import path
 from . import views
 
@@ -16,4 +18,7 @@ urlpatterns = [
     path('customers/', views.customer_list, name='customer_list'),
     path('customers/create/', views.customer_create, name='customer_create'),
     path('customers/<int:pk>/', views.customer_detail, name='customer_detail'),
+    # 👇 AJOUT DES DEUX URLS MANQUANTES
+    path('customers/<int:pk>/update/', views.customer_update, name='customer_update'),
+    path('customers/<int:pk>/sales/', views.customer_sales, name='customer_sales'),
 ]

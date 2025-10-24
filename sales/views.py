@@ -67,7 +67,7 @@ def create_sale(request):
                 payment_method=data.get('payment_method'),
                 amount_paid=data.get('amount_paid', 0),
                 created_by=request.user,
-                # 🌟 CORRECTION 1 : Statut forcé à 'completee' lors de la finalisation
+                # Statut forcé à 'completee' lors de la finalisation
                 status='completee',
             )
             
@@ -82,6 +82,7 @@ def create_sale(request):
                 )
             
             # Mettre à jour le sous-total
+            # Note: La méthode save() du modèle Sale devrait calculer le total
             sale.subtotal = sum(item.subtotal for item in sale.items.all())
             sale.save()
             
@@ -104,7 +105,7 @@ def create_sale(request):
 @login_required
 def sale_list(request):
     """Liste des ventes (Historique)"""
-    # 🌟 CORRECTION 2 : Filtrer UNIQUEMENT les ventes COMPLÉTÉES pour l'historique
+    # Filtrer UNIQUEMENT les ventes COMPLÉTÉES pour l'historique
     sales = Sale.objects.filter(status='completee').order_by('-created_at')
     
     # Filtres
@@ -201,10 +202,11 @@ def customer_create(request):
 def customer_detail(request, pk):
     """Détails d'un client"""
     customer = get_object_or_404(Customer, pk=pk)
-    sales = customer.sales.all()[:10]
+    # On filtre pour afficher uniquement les 10 dernières ventes complétées
+    sales = customer.sales.filter(status='completee').order_by('-created_at')[:10]
     
-    # Statistiques
-    total_spent = customer.sales.aggregate(total=Sum('total'))['total'] or 0
+    # Statistiques: On agrège uniquement le total des ventes complétées
+    total_spent = customer.sales.filter(status='completee').aggregate(total=Sum('total'))['total'] or 0
     
     context = {
         'customer': customer,
@@ -212,3 +214,39 @@ def customer_detail(request, pk):
         'total_spent': total_spent,
     }
     return render(request, 'sales/customer_detail.html', context)
+
+
+# -------------------------------------------------------------------------
+# 👇 AJOUT DES VUES MANQUANTES POUR customer_update et customer_sales
+# CECI DEVRAIT FIXER L'ERREUR 500 (NoReverseMatch)
+# -------------------------------------------------------------------------
+
+@login_required
+def customer_update(request, pk):
+    """Vue pour modifier un client (implémentation minimale)"""
+    customer = get_object_or_404(Customer, pk=pk)
+    # NOTE: Vous devrez implémenter la logique de modification complète ici
+    
+    if request.method == 'POST':
+        # Placeholder pour la logique de sauvegarde du formulaire
+        messages.success(request, f'Client "{customer.full_name}" mis à jour avec succès (logique à compléter) !')
+        return redirect('customer_detail', pk=customer.pk)
+        
+    return render(request, 'sales/customer_form.html', {'customer': customer})
+
+
+@login_required
+def customer_sales(request, pk):
+    """Vue pour lister TOUTES les ventes d'un client (implémentation minimale)"""
+    customer = get_object_or_404(Customer, pk=pk)
+    
+    # Récupère toutes les ventes complétées pour ce client
+    all_sales = customer.sales.filter(status='completee').order_by('-created_at')
+    
+    context = {
+        'customer': customer,
+        'sales': all_sales,
+        'total_sales': all_sales.aggregate(total=Sum('total'))['total'] or 0,
+    }
+    # NOTE: Assurez-vous d'avoir un template 'sales/customer_sales_list.html' ou utilisez 'sales/sale_list.html'
+    return render(request, 'sales/sale_list.html', context) # Utilisation temporaire de sale_list.html
