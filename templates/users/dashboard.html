@@ -4,7 +4,6 @@
 
 {% block content %}
 <div class="fade-in">
-    <!-- En-tête avec effet gradient -->
     <div class="mb-8 relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600 via-blue-700 to-purple-700 p-8 shadow-2xl">
         <div class="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full blur-3xl"></div>
         <div class="absolute bottom-0 left-0 w-96 h-96 bg-purple-400 opacity-10 rounded-full blur-3xl"></div>
@@ -13,16 +12,17 @@
             <div class="flex items-center justify-between">
                 <div>
                     <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white mb-3 leading-tight break-words text-center md:text-left">
-    Bienvenue, {{ user.username }} ! 👋
-</h1>
-<p class="text-blue-100 text-sm sm:text-base md:text-lg text-center md:text-left leading-snug">
-    Tableau de bord - PharmaNPS-Alou Manager
-</p>
+                        Bienvenue, {{ user.username }} ! 👋
+                    </h1>
+                    <p class="text-blue-100 text-sm sm:text-base md:text-lg text-center md:text-left leading-snug">
+                        Tableau de bord - PharmaNPS-Alou Manager
+                    </p>
 
                     <p class="text-blue-200 text-sm mt-2">
                         <i class="fas fa-calendar-alt mr-2"></i>{{ "now"|date:"l d F Y" }}
                     </p>
                 </div>
+
                 <div class="hidden md:block">
                     <div class="bg-white bg-opacity-20 backdrop-blur-lg rounded-2xl p-6 border border-white border-opacity-30">
                         <p class="text-white text-sm mb-2">CA du jour</p>
@@ -31,13 +31,20 @@
                     </div>
                 </div>
             </div>
+
+            <div class="block md:hidden mt-6">
+                <div class="bg-white bg-opacity-20 backdrop-blur-lg rounded-2xl p-4 border border-white border-opacity-30 text-center">
+                    <p class="text-white text-sm mb-1">CA du jour</p>
+                    <p class="text-3xl font-bold text-white">{{ total_sales_amount|floatformat:0 }}</p>
+                    <p class="text-blue-100 text-xs">FCFA</p>
+                </div>
+            </div>
+            
         </div>
     </div>
 
-    <!-- Cartes de statistiques avec animations -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         
-        <!-- Total médicaments -->
         <div class="group bg-white rounded-2xl shadow-lg p-6 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer border-2 border-transparent hover:border-blue-500">
             <div class="flex items-center justify-between mb-4">
                 <div class="bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl p-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
@@ -58,7 +65,6 @@
             </div>
         </div>
 
-        <!-- Total ventes -->
         <div class="group bg-white rounded-2xl shadow-lg p-6 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer border-2 border-transparent hover:border-green-500">
             <div class="flex items-center justify-between mb-4">
                 <div class="bg-gradient-to-br from-green-400 to-emerald-600 rounded-xl p-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
@@ -79,7 +85,6 @@
             </div>
         </div>
 
-        <!-- Total clients -->
         <div class="group bg-white rounded-2xl shadow-lg p-6 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer border-2 border-transparent hover:border-purple-500">
             <div class="flex items-center justify-between mb-4">
                 <div class="bg-gradient-to-br from-purple-400 to-purple-600 rounded-xl p-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
@@ -100,7 +105,6 @@
             </div>
         </div>
 
-        <!-- Alertes stock -->
         <div class="group bg-white rounded-2xl shadow-lg p-6 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer border-2 border-transparent hover:border-red-500">
             <div class="flex items-center justify-between mb-4">
                 <div class="bg-gradient-to-br from-red-400 to-red-600 rounded-xl p-4 shadow-lg group-hover:scale-110 group-hover:rotate-12 transition-all duration-300">
@@ -123,7 +127,6 @@
 
     </div>
 
-    <!-- Actions rapides avec design moderne -->
     <div class="bg-white rounded-2xl shadow-xl p-8 mb-8 border border-gray-100">
         <div class="flex items-center justify-between mb-6">
             <h2 class="text-2xl font-bold text-gray-900">
@@ -171,10 +174,8 @@
         </div>
     </div>
 
-    <!-- Graphiques (placeholder pour l'instant) -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         
-        <!-- Graphique ventes -->
         <div class="bg-white rounded-2xl shadow-xl p-6 border border-gray-100">
             <h3 class="text-xl font-bold text-gray-900 mb-4">
                 <i class="fas fa-chart-line text-blue-600 mr-2"></i>
@@ -188,7 +189,6 @@
             </div>
         </div>
 
-        <!-- Graphique produits -->
         <div class="bg-white rounded-2xl shadow-xl p-6 border border-gray-100">
             <h3 class="text-xl font-bold text-gray-900 mb-4">
                 <i class="fas fa-chart-pie text-green-600 mr-2"></i>
@@ -205,24 +205,24 @@
     </div>
 
     <div class="relative overflow-hidden bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 rounded-3xl shadow-2xl p-6 sm:p-10 text-white">
-    <div class="absolute top-0 right-0 w-96 h-96 bg-white opacity-10 rounded-full blur-3xl"></div>
-    <div class="absolute bottom-0 left-0 w-64 h-64 bg-pink-400 opacity-20 rounded-full blur-3xl"></div>
-    
-    <div class="relative z-10 flex flex-col sm:flex-row items-center sm:items-start">
+        <div class="absolute top-0 right-0 w-96 h-96 bg-white opacity-10 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-0 left-0 w-64 h-64 bg-pink-400 opacity-20 rounded-full blur-3xl"></div>
         
-        <div class="bg-white bg-opacity-20 backdrop-blur-lg rounded-2xl p-4 sm:p-6 mb-4 sm:mb-0 mr-0 sm:mr-6 border border-white border-opacity-30">
-            <i class="fas fa-heart text-3xl sm:text-5xl"></i>
-        </div>
-        
-        <div class="flex-1 text-center sm:text-left">
-            <h3 class="text-2xl sm:text-3xl font-extrabold mb-2 sm:mb-3 leading-tight">Votre santé, notre priorité ! 💊</h3>
+        <div class="relative z-10 flex flex-col sm:flex-row items-center sm:items-start">
             
-            <p class="text-purple-100 text-base sm:text-lg mb-0 sm:mb-2">
-                "De l'asthme à l'entrepreneuriat pharmaceutique - Transformons les défis en opportunités !"
-            </p>
+            <div class="bg-white bg-opacity-20 backdrop-blur-lg rounded-2xl p-4 sm:p-6 mb-4 sm:mb-0 mr-0 sm:mr-6 border border-white border-opacity-30">
+                <i class="fas fa-heart text-3xl sm:text-5xl"></i>
+            </div>
+            
+            <div class="flex-1 text-center sm:text-left">
+                <h3 class="text-2xl sm:text-3xl font-extrabold mb-2 sm:mb-3 leading-tight">Votre santé, notre priorité ! 💊</h3>
+                
+                <p class="text-purple-100 text-base sm:text-lg mb-0 sm:mb-2">
+                    "De l'asthme à l'entrepreneuriat pharmaceutique - Transformons les défis en opportunités !"
+                </p>
+            </div>
         </div>
     </div>
-</div>
 
 </div>
 
