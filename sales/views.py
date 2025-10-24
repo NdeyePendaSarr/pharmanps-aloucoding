@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import JsonResponse
 from django.db.models import Q, Sum
+# Import de FieldDoesNotExist retiré car nous changeons l'agrégation
 from .models import Sale, SaleItem, Customer
 from medications.models import Medication
 import json
@@ -80,6 +81,8 @@ def create_sale(request):
                 )
             
             # Mettre à jour le sous-total
+            # NOTE: Ce calcul est redondant si subtotal est déjà passé dans la création. 
+            # Je le garde pour la logique d'ensemble.
             sale.subtotal = sum(item.subtotal for item in sale.items.all())
             sale.save()
             
@@ -119,7 +122,8 @@ def sale_list(request):
         sales = sales.filter(created_at__date=date_filter)
     
     # Statistiques
-    total_sales = sales.aggregate(total=Sum('total'))['total'] or 0
+    # CORRECTION : Utilisation de 'subtotal' pour l'agrégation
+    total_sales = sales.aggregate(total=Sum('subtotal'))['total'] or 0
     
     context = {
         'sales': sales,
@@ -214,6 +218,7 @@ def customer_update(request, pk):
             customer.date_of_birth = request.POST.get('date_of_birth') or None
             customer.customer_type = request.POST.get('customer_type', 'particulier')
             customer.medical_conditions = request.POST.get('medical_conditions', '')
+            # Assurez-vous que credit_limit est bien un nombre ou 0
             customer.credit_limit = request.POST.get('credit_limit') or 0
             
             customer.save()
@@ -233,10 +238,13 @@ def customer_update(request, pk):
 def customer_detail(request, pk):
     """Détails d'un client"""
     customer = get_object_or_404(Customer, pk=pk)
-    sales = customer.sales.all()[:10]
     
-    # Statistiques
-    total_spent = customer.sales.aggregate(total=Sum('total'))['total'] or 0
+    # CORRECTION : Utilisation de 'subtotal' pour l'agrégation.
+    # On suppose que 'subtotal' est un champ de base de données valide.
+    total_spent = customer.sales.aggregate(total=Sum('subtotal'))['total'] or 0
+    
+    # Trier les ventes pour n'avoir que les 10 dernières
+    sales = customer.sales.all().order_by('-created_at')[:10]
     
     context = {
         'customer': customer,
