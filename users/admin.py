@@ -1,3 +1,5 @@
 from django.contrib import admin
+from django.contrib.auth.models import User
 
-# Register your models here.
+# Enregistrer le modèle User de base dans l'admin, si nécessaire
+# admin.site.register(User)
