@@ -8,7 +8,7 @@
         <!-- En-tête élégant -->
         <div class="mb-10 fade-in">
             <a href="{% url 'category_list' %}" 
-               class="group inline-flex items-center text-blue-600 hover:text-blue-700 font-semibold mb-6 transition-all duration-300 hover:translate-x-[-4px]">
+                class="group inline-flex items-center text-blue-600 hover:text-blue-700 font-semibold mb-6 transition-all duration-300 hover:translate-x-[-4px]">
                 <i class="fas fa-arrow-left mr-2 transition-transform group-hover:translate-x-[-4px]"></i>
                 Retour aux catégories
             </a>
@@ -18,7 +18,8 @@
                     <i class="fas fa-edit text-white text-3xl"></i>
                 </div>
                 <div>
-                    <h1 class="text-4xl font-bold text-gray-900 mb-1">
+                    <!-- TITRE RESPONSIVE : text-3xl sur mobile, sm:text-4xl sur desktop -->
+                    <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-1">
                         Modifier la catégorie
                     </h1>
                     <p class="text-gray-600 text-lg">{{ category.name }}</p>
@@ -105,7 +106,7 @@
             <div class="bg-gradient-to-r from-gray-50 to-blue-50 px-10 py-6 border-t border-gray-100">
                 <div class="flex flex-col sm:flex-row justify-end gap-4">
                     <a href="{% url 'category_list' %}" 
-                       class="group px-8 py-4 bg-white border-2 border-gray-300 hover:border-gray-400 text-gray-700 rounded-xl font-bold transition-all duration-300 shadow-sm hover:shadow-md text-center">
+                        class="group px-8 py-4 bg-white border-2 border-gray-300 hover:border-gray-400 text-gray-700 rounded-xl font-bold transition-all duration-300 shadow-sm hover:shadow-md text-center">
                         <i class="fas fa-times mr-2 transition-transform group-hover:rotate-90"></i>
                         Annuler
                     </a>
