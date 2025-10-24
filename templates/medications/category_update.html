@@ -18,11 +18,12 @@
                     <i class="fas fa-edit text-white text-3xl"></i>
                 </div>
                 <div>
-                    <!-- TITRE RESPONSIVE : text-3xl sur mobile, sm:text-4xl sur desktop -->
-                    <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-1">
+                    <!-- TITRE RESPONSIVE : text-2xl sur mobile, text-3xl sur sm -->
+                    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-1">
                         Modifier la catégorie
                     </h1>
-                    <p class="text-gray-600 text-lg">{{ category.name }}</p>
+                    <!-- Nom de la catégorie ajusté : text-base sur mobile, text-lg sur sm+ -->
+                    <p class="text-gray-600 text-base sm:text-lg">{{ category.name }}</p>
                 </div>
             </div>
         </div>
