@@ -116,24 +116,18 @@
                     <!-- Actions : Liens vers Modifier et Supprimer -->
                     <div class="flex gap-3">
                         
-                        <!-- Bouton Modifier -->
-                        <a href="{% url 'category_update' pk=cat.pk %}" 
-                           class="flex-1 group/btn bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-5 py-3 rounded-xl font-semibold transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105 relative overflow-hidden text-center">
-                            <span class="relative z-10 flex items-center justify-center">
-                                <i class="fas fa-edit mr-2 group-hover/btn:rotate-12 transition-transform"></i>
-                                Modifier
-                            </span>
-                            <div class="absolute inset-0 bg-white opacity-0 group-hover/btn:opacity-20 transition-opacity"></div>
-                        </a>
-                        
-                        <!-- Bouton Supprimer -->
-                        <a href="{% url 'category_delete' pk=cat.pk %}" 
-                           class="group/del bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-5 py-3 rounded-xl font-semibold transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105 relative overflow-hidden flex items-center justify-center">
-                            <span class="relative z-10">
-                                <i class="fas fa-trash group-hover/del:scale-110 transition-transform"></i>
-                            </span>
-                            <div class="absolute inset-0 bg-white opacity-0 group-hover/del:opacity-20 transition-opacity"></div>
-                        </a>
+                       <!-- Dans category_list.html, remplacez les boutons par : -->
+
+<div class="flex gap-2">
+    <a href="{% url 'category_update' cat.pk %}" 
+       class="flex-1 bg-blue-100 hover:bg-blue-200 text-blue-700 px-4 py-2 rounded-lg font-semibold transition text-sm">
+        <i class="fas fa-edit mr-1"></i>Modifier
+    </a>
+    <a href="{% url 'category_delete' cat.pk %}" 
+       class="bg-red-100 hover:bg-red-200 text-red-700 px-4 py-2 rounded-lg font-semibold transition text-sm">
+        <i class="fas fa-trash"></i>
+    </a>
+</div>
                     </div>
                 </div>
 

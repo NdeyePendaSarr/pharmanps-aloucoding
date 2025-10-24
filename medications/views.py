@@ -188,60 +188,52 @@ def category_create(request):
     return render(request, 'medications/category_form.html')
 
 
+# ✅ NOUVELLE VUE DE MODIFICATION
 @login_required
 def category_update(request, pk):
     """Modifier une catégorie existante"""
-    # Récupérer la catégorie ou renvoyer une erreur 404
     category = get_object_or_404(Category, pk=pk)
-
+    
     if request.method == 'POST':
-        try:
-            # Mettre à jour les champs de la catégorie
-            category.name = request.POST.get('name')
-            category.description = request.POST.get('description', '')
-            
+        name = request.POST.get('name')
+        description = request.POST.get('description', '')
+        
+        if name:
+            category.name = name
+            category.description = description
             category.save()
             
-            messages.success(request, f'Catégorie "{category.name}" modifiée avec succès ! ✏️')
+            messages.success(request, f'✅ Catégorie "{name}" modifiée avec succès !')
             return redirect('category_list')
-        
-        except Exception as e:
-            messages.error(request, f'Erreur lors de la modification : {str(e)}')
-
-    context = {
-        # Passer l'objet 'category' pour pré-remplir le formulaire
-        'category': category, 
-        # Indicateur pour personnaliser le titre du template category_form.html
-        'is_update': True, 
-    }
-    # Réutilisation du template d'ajout/modification
-    return render(request, 'medications/category_form.html', context)
+        else:
+            messages.error(request, '❌ Le nom de la catégorie est obligatoire.')
+    
+    return render(request, 'medications/category_update.html', {
+        'category': category,
+        'title': 'Modifier la Catégorie',
+        'action': 'update'
+    })
 
 
+# ✅ NOUVELLE VUE DE SUPPRESSION
 @login_required
 def category_delete(request, pk):
-    """Supprimer une catégorie (écran de confirmation)"""
+    """Supprimer une catégorie"""
     category = get_object_or_404(Category, pk=pk)
-
-    if request.method == 'POST':
-        try:
-            name = category.name
-            category.delete()
-            messages.success(request, f'Catégorie "{name}" supprimée avec succès ! 🗑️')
-            return redirect('category_list')
-        except Exception as e:
-            # Gérer les erreurs (ex: contrainte de clé étrangère si des médicaments existent)
-            messages.error(request, f'Erreur lors de la suppression : {str(e)}')
-            return redirect('category_list') # Rediriger vers la liste en cas d'erreur
     
-    context = {
-        # Passer l'objet 'category' pour l'affichage du nom à confirmer
-        'category': category, 
-        'object': category, # Utilisation de 'object' pour compatibilité avec le template de suppression
-    }
-    # Utilisation du template de confirmation de suppression
-    return render(request, 'medications/category_confirm_delete.html', context)
-
+    # Vérifier si la catégorie a des médicaments
+    medications_count = category.medications.count()
+    
+    if request.method == 'POST':
+        category_name = category.name
+        category.delete()
+        messages.success(request, f'✅ Catégorie "{category_name}" supprimée avec succès !')
+        return redirect('category_list')
+    
+    return render(request, 'medications/category_confirm_delete.html', {
+        'category': category,
+        'medications_count': medications_count
+    })
 
 @login_required
 def stock_movement_create(request, medication_pk):

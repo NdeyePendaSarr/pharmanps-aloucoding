@@ -1,205 +1,149 @@
 {% extends 'base.html' %}
 
-{% block title %}
-{% if form.instance.pk %}
-    Modifier Catégorie : {{ form.instance.name }} - PharmaNPS-Alou
-{% else %}
-    Nouvelle Catégorie - PharmaNPS-Alou
-{% endif %}
-{% endblock %}
+{% block title %}Nouvelle Catégorie - PharmaNPS-Alou{% endblock %}
 
 {% block content %}
 <div class="min-h-screen py-12 px-4">
-    <div class="max-w-3xl mx-auto">
-        <!-- En-tête avec effet de profondeur -->
-        <div class="mb-10 fade-in">
-            <a href="{% url 'category_list' %}"
-               class="group inline-flex items-center text-purple-600 hover:text-purple-700 font-semibold mb-6 transition-all duration-300 hover:translate-x-[-4px]">
-                <i class="fas fa-arrow-left mr-2 transition-transform group-hover:translate-x-[-4px]"></i>
-                Retour aux catégories
-            </a>
-            
-            <div class="flex items-center gap-4">
-                <div class="bg-gradient-to-br from-purple-500 to-purple-700 p-4 rounded-2xl shadow-lg">
-                    <!-- Icône dynamique selon l'action -->
-                    <i class="fas {% if form.instance.pk %}fa-edit{% else %}fa-plus{% endif %} text-white text-2xl"></i>
-                </div>
-                <div>
-                    <!-- Titre dynamique -->
-                    <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-1">
-                        {% if form.instance.pk %}
-                            Modifier Catégorie : {{ form.instance.name }}
-                        {% else %}
-                            Nouvelle Catégorie
-                        {% endif %}
-                    </h1>
-                    <p class="text-gray-500">
-                        {% if form.instance.pk %}
-                            Mettez à jour les informations de cette catégorie.
-                        {% else %}
-                            Ajoutez une nouvelle catégorie à votre inventaire.
-                        {% endif %}
-                    </p>
-                </div>
-            </div>
+  <div class="max-w-3xl mx-auto">
+
+    <!-- En-tête -->
+    <div class="mb-10 fade-in">
+      <a href="{% url 'category_list' %}" 
+         class="group inline-flex items-center text-purple-600 hover:text-purple-700 font-semibold mb-6 transition-all duration-300 hover:-translate-x-1">
+        <i class="fas fa-arrow-left mr-2 transition-transform group-hover:-translate-x-1"></i>
+        Retour aux catégories
+      </a>
+
+      <div class="flex items-center gap-4">
+        <div class="bg-gradient-to-br from-purple-500 to-purple-700 p-4 rounded-2xl shadow-lg">
+          <i class="fas fa-plus text-white text-2xl"></i>
         </div>
-
-        <!-- Formulaire avec effet glassmorphism -->
-        <form method="POST"
-              class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-gray-100 overflow-hidden fade-in"
-              {% if form.instance.pk %}
-                  action="{% url 'category_update' pk=form.instance.pk %}"
-              {% else %}
-                  action="{% url 'category_create' %}"
-              {% endif %}
-        >
-            {% csrf_token %}
-            
-            <!-- Réduction du padding général à p-8 (anciennement p-10) -->
-            <div class="p-8">
-                <!-- Réduction de l'espace vertical entre les champs à space-y-6 (anciennement space-y-8) -->
-                <div class="space-y-6">
-                    <!-- Champ Nom -->
-                    <div class="group">
-                        <label for="{{ form.name.id_for_label }}" class="flex items-center text-sm font-bold text-gray-800 mb-3 uppercase tracking-wide">
-                            <span class="bg-purple-100 text-purple-600 w-8 h-8 rounded-lg flex items-center justify-center mr-3">
-                                <i class="fas fa-tag text-sm"></i>
-                            </span>
-                            Nom de la catégorie *
-                        </label>
-                        <div class="relative">
-                            <input
-                                type="text"
-                                name="{{ form.name.name }}"
-                                id="{{ form.name.id_for_label }}"
-                                value="{{ form.name.value|default_if_none:'' }}"
-                                required
-                                class="w-full px-6 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-200 focus:border-purple-500 transition-all duration-300 text-gray-800 font-medium placeholder-gray-400 hover:border-gray-300"
-                                placeholder="Ex: Antibiotiques, Antalgiques, Anti-asthmatiques..."
-                            >
-                            <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
-                                <i class="fas fa-pen text-gray-300"></i>
-                            </div>
-                        </div>
-                        {% if form.name.errors %}
-                            <p class="mt-2 text-sm text-red-600">{{ form.name.errors|striptags }}</p>
-                        {% endif %}
-                    </div>
-
-                    <!-- Champ Description -->
-                    <div class="group">
-                        <label for="{{ form.description.id_for_label }}" class="flex items-center text-sm font-bold text-gray-800 mb-3 uppercase tracking-wide">
-                            <span class="bg-purple-100 text-purple-600 w-8 h-8 rounded-lg flex items-center justify-center mr-3">
-                                <i class="fas fa-align-left text-sm"></i>
-                            </span>
-                            Description
-                        </label>
-                        <div class="relative">
-                            <textarea
-                                name="{{ form.description.name }}"
-                                id="{{ form.description.id_for_label }}"
-                                rows="5"
-                                class="w-full px-6 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-200 focus:border-purple-500 transition-all duration-300 text-gray-800 font-medium placeholder-gray-400 hover:border-gray-300 resize-none"
-                                placeholder="Décrivez brièvement cette catégorie et son utilité..."
-                            >{{ form.description.value|default_if_none:"" }}</textarea>
-                            <div class="absolute top-4 right-4 pointer-events-none">
-                                <i class="fas fa-comment-dots text-gray-300"></i>
-                            </div>
-                        </div>
-                        <p class="mt-2 text-xs text-gray-500 ml-1">
-                            <i class="fas fa-info-circle mr-1"></i>
-                            Optionnel : Ajoutez des détails pour faciliter l'identification
-                        </p>
-                          {% if form.description.errors %}
-                            <p class="mt-2 text-sm text-red-600">{{ form.description.errors|striptags }}</p>
-                        {% endif %}
-                    </div>
-                </div>
-
-                <!-- Affichage des erreurs globales du formulaire -->
-                {% if form.non_field_errors %}
-                    <div class="mt-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-xl">
-                        {% for error in form.non_field_errors %}
-                            <p class="text-sm"><i class="fas fa-exclamation-triangle mr-2"></i>{{ error }}</p>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-            </div>
-
-            <!-- Barre d'actions avec dégradé -->
-            <div class="bg-gradient-to-r from-gray-50 to-purple-50 px-10 py-6 border-t border-gray-100">
-                <div class="flex flex-col sm:flex-row justify-end gap-4">
-                    <a href="{% url 'category_list' %}"
-                       class="group px-8 py-3.5 bg-white border-2 border-gray-300 hover:border-gray-400 text-gray-700 rounded-xl font-semibold transition-all duration-300 shadow-sm hover:shadow-md text-center">
-                        <i class="fas fa-times mr-2 transition-transform group-hover:rotate-90"></i>
-                        Annuler
-                    </a>
-                    <button type="submit"
-                            class="group px-8 py-3.5 bg-gradient-to-r from-purple-600 via-purple-700 to-purple-800 hover:from-purple-700 hover:via-purple-800 hover:to-purple-900 text-white rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-2xl shadow-purple-300/50 relative overflow-hidden">
-                        <span class="relative z-10 flex items-center justify-center">
-                            <!-- Texte du bouton dynamique -->
-                            <i class="fas fa-save mr-2 group-hover:scale-110 transition-transform"></i>
-                            {% if form.instance.pk %}
-                                Modifier la catégorie
-                            {% else %}
-                                Enregistrer la catégorie
-                            {% endif %}
-                        </span>
-                        <div class="absolute inset-0 bg-gradient-to-r from-purple-400 to-purple-600 opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
-                    </button>
-                </div>
-            </div>
-        </form>
-
-        <!-- Carte d'aide -->
-        <div class="mt-8 bg-gradient-to-br from-purple-50 to-blue-50 rounded-2xl p-6 border border-purple-100 fade-in">
-            <div class="flex items-start gap-4">
-                <div class="bg-purple-100 p-3 rounded-xl">
-                    <i class="fas fa-lightbulb text-purple-600 text-xl"></i>
-                </div>
-                <div>
-                    <h3 class="font-bold text-gray-800 mb-2">Conseil</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed">
-                        Choisissez un nom clair et précis pour faciliter la classification de vos produits.
-                        Une bonne organisation des catégories améliore la gestion de votre inventaire.
-                    </p>
-                </div>
-            </div>
+        <div>
+          <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-1">Nouvelle catégorie</h1>
+          <p class="text-gray-500">Ajoutez une nouvelle catégorie à votre inventaire</p>
         </div>
+      </div>
     </div>
+
+    <!-- Formulaire -->
+    <form method="POST" class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-gray-100 overflow-hidden fade-in">
+      {% csrf_token %}
+      <div class="p-10">
+        <div class="space-y-8">
+
+          <!-- Champ Nom -->
+          <div class="group">
+            <label class="flex items-center text-sm font-bold text-gray-800 mb-3 uppercase tracking-wide">
+              <span class="bg-purple-100 text-purple-600 w-8 h-8 rounded-lg flex items-center justify-center mr-3">
+                <i class="fas fa-tag text-sm"></i>
+              </span>
+              Nom de la catégorie *
+            </label>
+            <div class="relative">
+              <input 
+                type="text" 
+                name="name" 
+                required
+                class="w-full px-6 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-200 focus:border-purple-500 transition-all duration-300 text-gray-800 font-medium placeholder-gray-400 hover:border-gray-300"
+                placeholder="Ex: Antibiotiques, Antalgiques, Anti-asthmatiques..."
+              >
+              <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
+                <i class="fas fa-pen text-gray-300"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- Champ Description -->
+          <div class="group">
+            <label class="flex items-center text-sm font-bold text-gray-800 mb-3 uppercase tracking-wide">
+              <span class="bg-purple-100 text-purple-600 w-8 h-8 rounded-lg flex items-center justify-center mr-3">
+                <i class="fas fa-align-left text-sm"></i>
+              </span>
+              Description
+            </label>
+            <div class="relative">
+              <textarea 
+                name="description" 
+                rows="5"
+                class="w-full px-6 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-200 focus:border-purple-500 transition-all duration-300 text-gray-800 font-medium placeholder-gray-400 hover:border-gray-300 resize-none"
+                placeholder="Décrivez brièvement cette catégorie et son utilité..."
+              ></textarea>
+              <div class="absolute top-4 right-4 pointer-events-none">
+                <i class="fas fa-comment-dots text-gray-300"></i>
+              </div>
+            </div>
+            <p class="mt-2 text-xs text-gray-500 ml-1">
+              <i class="fas fa-info-circle mr-1"></i>
+              Optionnel : Ajoutez des détails pour faciliter l'identification
+            </p>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Barre d'actions -->
+      <div class="bg-gradient-to-r from-gray-50 to-purple-50 px-10 py-6 border-t border-gray-100">
+        <div class="flex flex-col sm:flex-row justify-end gap-4">
+          <a href="{% url 'category_list' %}" 
+             class="group px-8 py-3.5 bg-white border-2 border-gray-300 hover:border-gray-400 text-gray-700 rounded-xl font-semibold transition-all duration-300 shadow-sm hover:shadow-md text-center">
+            <i class="fas fa-times mr-2 transition-transform group-hover:rotate-90"></i>
+            Annuler
+          </a>
+          <button type="submit" 
+                  class="group px-8 py-3.5 bg-gradient-to-r from-purple-600 via-purple-700 to-purple-800 hover:from-purple-700 hover:via-purple-800 hover:to-purple-900 text-white rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-2xl shadow-purple-300/50 relative overflow-hidden">
+            <span class="relative z-10 flex items-center justify-center">
+              <i class="fas fa-save mr-2 group-hover:scale-110 transition-transform"></i>
+              Enregistrer la catégorie
+            </span>
+            <div class="absolute inset-0 bg-gradient-to-r from-purple-400 to-purple-600 opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+          </button>
+        </div>
+      </div>
+    </form>
+
+    <!-- Carte d'aide -->
+    <div class="mt-8 bg-gradient-to-br from-purple-50 to-blue-50 rounded-2xl p-6 border border-purple-100 fade-in">
+      <div class="flex items-start gap-4">
+        <div class="bg-purple-100 p-3 rounded-xl">
+          <i class="fas fa-lightbulb text-purple-600 text-xl"></i>
+        </div>
+        <div>
+          <h3 class="font-bold text-gray-800 mb-2">Conseil</h3>
+          <p class="text-sm text-gray-600 leading-relaxed">
+            Choisissez un nom clair et précis pour faciliter la classification de vos produits. 
+            Une bonne organisation des catégories améliore la gestion de votre inventaire.
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </div>
 </div>
 
 <style>
-    .fade-in {
-        animation: fadeInUp 0.6s ease-out;
-    }
-    
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
+  .fade-in {
+    animation: fadeInUp 0.6s ease-out;
+  }
 
-    /* Animation au focus des inputs */
-    input:focus, textarea:focus {
-        animation: pulse 0.3s ease-out;
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
     }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 
-    @keyframes pulse {
-        0% {
-            transform: scale(1);
-        }
-        50% {
-            transform: scale(1.01);
-        }
-        100% {
-            transform: scale(1);
-        }
-    }
+  input:focus, textarea:focus {
+    animation: pulse 0.3s ease-out;
+  }
+
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.01); }
+    100% { transform: scale(1); }
+  }
 </style>
 {% endblock %}

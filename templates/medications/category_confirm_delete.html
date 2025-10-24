@@ -1,105 +1,187 @@
 {% extends 'base.html' %}
 
-{% block title %}Supprimer Catégorie : {{ object.name }} - PharmaNPS-Alou{% endblock %}
+{% block title %}Supprimer {{ category.name }} - PharmaNPS-Alou{% endblock %}
 
 {% block content %}
-<div class="min-h-screen py-12 px-4 flex items-start justify-center">
-    <div class="max-w-xl w-full">
-        <!-- En-tête de retour -->
-        <div class="mb-10 fade-in">
-            <a href="{% url 'category_list' %}" 
-               class="group inline-flex items-center text-gray-500 hover:text-gray-700 font-semibold mb-6 transition-all duration-300 hover:translate-x-[-4px]">
-                <i class="fas fa-arrow-left mr-2 transition-transform group-hover:translate-x-[-4px]"></i>
-                Retour aux catégories
-            </a>
+<div class="min-h-screen flex items-center justify-center py-12 px-4 bg-gradient-to-br from-red-50 via-white to-orange-50">
+    <div class="max-w-2xl w-full">
+        <!-- Carte principale -->
+        <div class="bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl overflow-hidden border border-red-100 fade-in">
             
-            <div class="flex items-center gap-4">
-                <div class="bg-red-500 p-4 rounded-2xl shadow-lg">
-                    <i class="fas fa-exclamation-triangle text-white text-2xl"></i>
-                </div>
-                <div>
-                    <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-1">
-                        Confirmation de Suppression
+            <!-- En-tête avec animation -->
+            <div class="relative bg-gradient-to-br from-red-500 via-red-600 to-red-700 p-8 overflow-hidden">
+                <!-- Formes décoratives -->
+                <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32 animate-pulse-slow"></div>
+                <div class="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full -ml-24 -mb-24 animate-pulse-slow" style="animation-delay: 1s;"></div>
+                
+                <div class="relative text-center">
+                    <!-- Icône d'avertissement -->
+                    <div class="inline-block relative mb-6">
+                        <div class="absolute inset-0 bg-white/30 rounded-full animate-ping"></div>
+                        <div class="relative bg-white rounded-full w-24 h-24 flex items-center justify-center shadow-xl">
+                            <i class="fas fa-exclamation-triangle text-red-600 text-5xl animate-bounce-slow"></i>
+                        </div>
+                    </div>
+                    
+                    <h1 class="text-4xl font-bold text-white mb-3 drop-shadow-lg">
+                        Confirmation requise
                     </h1>
-                    <p class="text-gray-500">
-                        Veuillez confirmer si vous souhaitez vraiment supprimer cette catégorie.
+                    <p class="text-red-100 text-lg font-medium">
+                        <i class="fas fa-lock mr-2"></i>
+                        Cette action est irréversible
                     </p>
                 </div>
             </div>
-        </div>
 
-        <!-- Carte de suppression -->
-        <div class="bg-white rounded-3xl shadow-2xl border-t-8 border-red-500 overflow-hidden fade-in p-8 sm:p-10">
-            <div class="text-center mb-8">
-                <i class="fas fa-trash-alt text-red-500 text-6xl mb-4 animate-bounce-slow"></i>
-                
-                <h2 class="text-2xl font-bold text-gray-800 mb-2">
-                    Supprimer la catégorie : <span class="text-red-600">{{ object.name }}</span>
-                </h2>
-                
-                <p class="text-lg text-gray-600">
-                    Êtes-vous sûr de vouloir supprimer la catégorie "<strong>{{ object.name }}</strong>" ?
-                </p>
-                
-                <div class="mt-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl font-medium text-sm">
-                    <i class="fas fa-exclamation-circle mr-2"></i>
-                    Cette action est **irréversible**. Tous les produits associés à cette catégorie devront être reclassés.
+            <!-- Contenu -->
+            <div class="p-10">
+                <!-- Message d'avertissement -->
+                <div class="bg-gradient-to-r from-red-50 to-orange-50 border-l-4 border-red-500 rounded-xl p-6 mb-8">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-red-100 rounded-lg p-3 flex-shrink-0">
+                            <i class="fas fa-info-circle text-red-600 text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-gray-900 mb-2">Attention</h3>
+                            <p class="text-gray-700 leading-relaxed">
+                                Vous êtes sur le point de supprimer définitivement cette catégorie.
+                            </p>
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-            <form method="POST" action="{% url 'category_delete' pk=object.pk %}" class="space-y-4">
-                {% csrf_token %}
-                
-                <!-- Bloc d'actions -->
-                <div class="flex flex-col sm:flex-row justify-center gap-4 pt-4">
-                    <!-- Bouton Annuler -->
-                    <a href="{% url 'category_list' %}" 
-                       class="group px-8 py-3.5 bg-gray-100 border-2 border-gray-300 hover:border-gray-400 text-gray-700 rounded-xl font-semibold transition-all duration-300 shadow-sm hover:shadow-md text-center order-2 sm:order-1">
-                        <i class="fas fa-times mr-2 transition-transform group-hover:rotate-90"></i>
-                        Annuler et revenir
-                    </a>
-                    
-                    <!-- Bouton Confirmer la Suppression (Rouge Vif) -->
-                    <button type="submit" 
-                            class="group px-8 py-3.5 bg-gradient-to-r from-red-600 via-red-700 to-red-800 hover:from-red-700 hover:via-red-800 hover:to-red-900 text-white rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-xl shadow-red-300/50 relative overflow-hidden order-1 sm:order-2">
-                        <span class="relative z-10 flex items-center justify-center">
-                            <i class="fas fa-check-circle mr-2 group-hover:scale-110 transition-transform"></i>
-                            Oui, Supprimer définitivement
+                <!-- Informations de la catégorie -->
+                <div class="mb-8">
+                    <p class="text-gray-600 font-semibold mb-4 flex items-center">
+                        <span class="bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center mr-3">
+                            <i class="fas fa-tag text-gray-600 text-sm"></i>
                         </span>
-                        <div class="absolute inset-0 bg-gradient-to-r from-red-400 to-red-600 opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
-                    </button>
+                        Catégorie à supprimer :
+                    </p>
+                    
+                    <div class="relative group">
+                        <div class="relative bg-gradient-to-br from-white to-gray-50 rounded-2xl p-6 border-3 border-red-300 shadow-lg">
+                            <!-- Badge -->
+                            <div class="absolute top-4 right-4">
+                                <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-bold uppercase flex items-center gap-2">
+                                    <span class="w-2 h-2 bg-red-600 rounded-full animate-pulse"></span>
+                                    À supprimer
+                                </span>
+                            </div>
+
+                            <div class="space-y-3 pr-32">
+                                <div>
+                                    <p class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-1">Nom</p>
+                                    <p class="text-2xl font-bold text-gray-900">{{ category.name }}</p>
+                                </div>
+                                
+                                {% if category.description %}
+                                <div>
+                                    <p class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-1">Description</p>
+                                    <p class="text-gray-700">{{ category.description }}</p>
+                                </div>
+                                {% endif %}
+                                
+                                <div class="pt-3 border-t border-gray-200">
+                                    <div class="flex items-center gap-2">
+                                        <i class="fas fa-pills text-blue-600"></i>
+                                        <span class="text-sm font-semibold text-gray-700">
+                                            {{ medications_count }} médicament{{ medications_count|pluralize }} associé{{ medications_count|pluralize }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </form>
+
+                <!-- Conséquences -->
+                {% if medications_count > 0 %}
+                <div class="bg-orange-50 rounded-2xl p-6 mb-8 border border-orange-200">
+                    <h3 class="font-bold text-gray-900 mb-3 flex items-center">
+                        <i class="fas fa-exclamation-circle text-orange-600 mr-2"></i>
+                        Impact sur les médicaments
+                    </h3>
+                    <p class="text-gray-700 leading-relaxed">
+                        <strong>{{ medications_count }} médicament{{ medications_count|pluralize }}</strong> {{ medications_count|pluralize:"est,sont" }} actuellement associé{{ medications_count|pluralize }} à cette catégorie. 
+                        Après suppression, {{ medications_count|pluralize:"il,ils" }} n'aura{{ medications_count|pluralize:"ont" }} plus de catégorie.
+                    </p>
+                </div>
+                {% endif %}
+
+                <!-- Boutons d'action -->
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <a href="{% url 'category_list' %}" 
+                           class="group flex-1 relative bg-white border-2 border-gray-300 hover:border-gray-400 text-gray-700 px-8 py-4 rounded-xl font-bold text-center transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105">
+                            <span class="flex items-center justify-center">
+                                <i class="fas fa-arrow-left mr-3 group-hover:translate-x-[-4px] transition-transform"></i>
+                                Annuler et retourner
+                            </span>
+                        </a>
+                        
+                        <button type="submit" 
+                                class="group flex-1 relative bg-gradient-to-r from-red-600 via-red-700 to-red-800 hover:from-red-700 hover:via-red-800 hover:to-red-900 text-white px-8 py-4 rounded-xl font-bold transition-all duration-300 shadow-lg hover:shadow-2xl shadow-red-300/50 transform hover:scale-105 overflow-hidden">
+                            <span class="relative z-10 flex items-center justify-center">
+                                <i class="fas fa-trash-alt mr-3 group-hover:scale-110 transition-transform"></i>
+                                Supprimer définitivement
+                            </span>
+                            <div class="absolute inset-0 bg-gradient-to-r from-red-400 to-red-600 opacity-0 group-hover:opacity-30 transition-opacity duration-300"></div>
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>
 
 <style>
     .fade-in {
-        animation: fadeInUp 0.6s ease-out;
+        animation: fadeInUp 0.6s ease-out backwards;
     }
     
     @keyframes fadeInUp {
         from {
             opacity: 0;
-            transform: translateY(20px);
+            transform: translateY(30px);
         }
         to {
             opacity: 1;
             transform: translateY(0);
         }
     }
+
+    .animate-pulse-slow {
+        animation: pulse-slow 3s ease-in-out infinite;
+    }
     
-    @keyframes bounce-slow {
+    @keyframes pulse-slow {
         0%, 100% {
+            opacity: 0.5;
             transform: scale(1);
         }
         50% {
+            opacity: 0.8;
             transform: scale(1.05);
         }
     }
+
     .animate-bounce-slow {
-        animation: bounce-slow 2s infinite ease-in-out;
+        animation: bounce-slow 2s ease-in-out infinite;
+    }
+    
+    @keyframes bounce-slow {
+        0%, 100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-10px);
+        }
+    }
+
+    .border-3 {
+        border-width: 3px;
     }
 </style>
 {% endblock %}
