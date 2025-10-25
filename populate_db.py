@@ -1,6 +1,6 @@
 """
 Script pour remplir la base de donnees avec des donnees de test realistes
-Executez : py manage.py shell < populate_db.py
+
 """
 # -*- coding: utf-8 -*-
 
@@ -10,7 +10,7 @@ import django
 from datetime import datetime, timedelta
 from decimal import Decimal
 
-# ✅ BLOQUER EN PRODUCTION
+#  BLOQUER EN PRODUCTION
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'pharmanps_alou.settings')
 django.setup()
 

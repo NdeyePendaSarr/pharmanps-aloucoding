@@ -16,10 +16,4 @@ python manage.py collectstatic --noinput
 echo "🗄️ Application des migrations..."
 python manage.py migrate
 
-# ❌ SUPPRIMEZ CES DEUX LIGNES :
-# echo "👤 Création du superuser..."
-# python create_admin.py
-
-# ✅ OU au minimum, gardez UNE SEULE fois et protégez-la :
-
 echo "✅ Build terminé avec succès!"

@@ -82,7 +82,6 @@ def create_sale(request):
                 )
             
             # Mettre à jour le sous-total
-            # Note: La méthode save() du modèle Sale devrait calculer le total
             sale.subtotal = sum(item.subtotal for item in sale.items.all())
             sale.save()
             
@@ -227,7 +226,7 @@ def customer_update(request, pk):
     
     if request.method == 'POST':
         try:
-            # 1. Récupérer et mettre à jour les champs de l'objet customer
+            # Récupérer et mettre à jour les champs de l'objet customer
             customer.first_name = request.POST.get('first_name')
             customer.last_name = request.POST.get('last_name')
             customer.phone = request.POST.get('phone')
@@ -249,7 +248,7 @@ def customer_update(request, pk):
             except (ValueError, TypeError):
                 customer.credit_limit = 0
             
-            # 2. Sauvegarder l'objet mis à jour dans la base de données
+            #Sauvegarder l'objet mis à jour dans la base de données
             customer.save()
             
             messages.success(request, f'Client "{customer.full_name}" mis à jour avec succès !')
@@ -279,5 +278,4 @@ def customer_sales(request, pk):
         'sales': all_sales,
         'total_sales': all_sales.aggregate(total=Sum('total'))['total'] or 0,
     }
-    # NOTE: Assurez-vous d'avoir un template 'sales/customer_sales_list.html' ou utilisez 'sales/sale_list.html'
     return render(request, 'sales/sale_list.html', context) # Utilisation temporaire de sale_list.html

@@ -13,7 +13,7 @@ from django.db.models import Count
 
 print("🔍 DIAGNOSTIC DES DONNÉES\n")
 
-# 1. Vérifier les doublons de médicaments
+# Vérification des doublons de médicaments
 print("📊 MÉDICAMENTS DUPLIQUÉS (même code-barres) :")
 duplicates = Medication.objects.values('barcode').annotate(
     count=Count('id')
@@ -30,7 +30,7 @@ else:
 
 print()
 
-# 2. Vérifier les ventes récentes
+# Vérification les ventes récentes
 print("📊 VENTES DES 24 DERNIÈRES HEURES :")
 from datetime import datetime, timedelta
 recent_sales = Sale.objects.filter(
@@ -45,7 +45,7 @@ else:
 
 print()
 
-# 3. Statistiques générales
+# Statistiques générales
 print("📊 STATISTIQUES GÉNÉRALES :")
 print(f"  Total médicaments : {Medication.objects.count()}")
 print(f"  Total ventes : {Sale.objects.count()}")
@@ -53,7 +53,7 @@ print(f"  Médicaments stock faible : {Medication.objects.filter(quantity__lte=5
 
 print()
 
-# 4. Dernières créations
+# Dernières créations
 print("📊 DERNIÈRES CRÉATIONS :")
 latest_meds = Medication.objects.order_by('-created_at')[:5]
 for med in latest_meds:

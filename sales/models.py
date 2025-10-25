@@ -86,7 +86,6 @@ class Sale(models.Model):
     change_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0, verbose_name="Monnaie rendue")
     
     # Statut
-    # 🌟 CORRECTION CLÉ APPLIQUÉE ICI
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='en_cours', verbose_name="Statut") 
     
     # Métadonnées
