@@ -127,6 +127,7 @@ def sale_list(request):
         'sales': sales,
         'total_sales': total_sales,
         'search': search,
+        'date_filter': date_filter,
     }
     return render(request, 'sales/sale_list.html', context)
 

@@ -64,8 +64,7 @@
                         <i class="fas fa-tags mr-2 text-purple-500"></i>Catégorie
                     </label>
                     <select 
-                        name="category" 
-                        class="w-full px-4 py-3 border-2 border-gray-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-purple-200 focus:border-purple-500 transition-all"
+                        name="category" onchange="this.form.submit()" class="w-full px-4 py-3 border-2 border-gray-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-purple-200 focus:border-purple-500 transition-all"
                     >
                         <option value="">Toutes</option>
                         {% for cat in categories %}
@@ -81,8 +80,7 @@
                         <i class="fas fa-box mr-2 text-orange-500"></i>État du stock
                     </label>
                     <select 
-                        name="stock" 
-                        class="w-full px-4 py-3 border-2 border-gray-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-orange-200 focus:border-orange-500 transition-all"
+                        name="stock" onchange="this.form.submit()" class="w-full px-4 py-3 border-2 border-gray-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-orange-200 focus:border-orange-500 transition-all"
                     >
                         <option value="">Tous</option>
                         <option value="low" {% if stock_filter == 'low' %}selected{% endif %}>Stock faible</option>

@@ -91,12 +91,44 @@ def dashboard_view(request):
     
     # Statistiques clients
     total_customers = Customer.objects.count()
-    
+
+    # --- Données pour les graphiques ---
+    import json
+    from datetime import timedelta
+    from sales.models import SaleItem
+
+    # 1) Évolution des ventes sur les 7 derniers jours
+    labels_jours = []
+    donnees_ventes = []
+    for i in range(6, -1, -1):
+        jour = today - timedelta(days=i)
+        total_jour = Sale.objects.filter(
+            created_at__date=jour, status='completee'
+        ).aggregate(total=Sum('total'))['total'] or 0
+        labels_jours.append(jour.strftime('%d/%m'))
+        donnees_ventes.append(float(total_jour))
+
+    # 2) Top 5 des médicaments les plus vendus (par quantité)
+    from django.db.models import Sum as SumAgg
+    top_items = (
+        SaleItem.objects
+        .values('medication__name')
+        .annotate(qte=SumAgg('quantity'))
+        .order_by('-qte')[:5]
+    )
+    labels_produits = [t['medication__name'] for t in top_items]
+    donnees_produits = [int(t['qte']) for t in top_items]
+
     context = {
         'total_medications': total_medications,
         'total_sales': sales_count_today,
         'total_sales_amount': total_sales_today,
         'total_customers': total_customers,
         'low_stock_count': low_stock_count,
+        # graphiques (sérialisés en JSON pour le template)
+        'chart_sales_labels': json.dumps(labels_jours),
+        'chart_sales_data': json.dumps(donnees_ventes),
+        'chart_products_labels': json.dumps(labels_produits),
+        'chart_products_data': json.dumps(donnees_produits),
     }
     return render(request, 'users/dashboard.html', context)

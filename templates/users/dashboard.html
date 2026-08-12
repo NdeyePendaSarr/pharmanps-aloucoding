@@ -181,11 +181,8 @@
                 <i class="fas fa-chart-line text-blue-600 mr-2"></i>
                 Évolution des ventes
             </h3>
-            <div class="h-64 flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl">
-                <div class="text-center">
-                    <i class="fas fa-chart-bar text-6xl text-gray-300 mb-4"></i>
-                    <p class="text-gray-500">Graphique interactif disponible prochainement</p>
-                </div>
+            <div class="h-64">
+                <canvas id="salesChart"></canvas>
             </div>
         </div>
 
@@ -194,11 +191,8 @@
                 <i class="fas fa-chart-pie text-green-600 mr-2"></i>
                 Produits les plus vendus
             </h3>
-            <div class="h-64 flex items-center justify-center bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl">
-                <div class="text-center">
-                    <i class="fas fa-chart-pie text-6xl text-gray-300 mb-4"></i>
-                    <p class="text-gray-500">Graphique interactif disponible prochainement</p>
-                </div>
+            <div class="h-64">
+                <canvas id="productsChart"></canvas>
             </div>
         </div>
 
@@ -239,4 +233,69 @@
         animation: float 2s ease-in-out infinite;
     }
 </style>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Palette cohérente avec le thème
+    const indigo = '#6366f1';
+    const green = '#10b981';
+
+    // 1) Évolution des ventes (7 derniers jours) — courbe
+    const salesCtx = document.getElementById('salesChart');
+    if (salesCtx) {
+        new Chart(salesCtx, {
+            type: 'line',
+            data: {
+                labels: {{ chart_sales_labels|safe }},
+                datasets: [{
+                    label: 'Ventes (FCFA)',
+                    data: {{ chart_sales_data|safe }},
+                    borderColor: indigo,
+                    backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                    fill: true,
+                    tension: 0.35,
+                    pointBackgroundColor: indigo,
+                    pointRadius: 4,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, ticks: { callback: v => v.toLocaleString() + ' F' } }
+                }
+            }
+        });
+    }
+
+    // 2) Produits les plus vendus — camembert
+    const productsCtx = document.getElementById('productsChart');
+    const productsData = {{ chart_products_data|safe }};
+    if (productsCtx && productsData.length > 0) {
+        new Chart(productsCtx, {
+            type: 'doughnut',
+            data: {
+                labels: {{ chart_products_labels|safe }},
+                datasets: [{
+                    data: productsData,
+                    backgroundColor: ['#6366f1', '#10b981', '#f59e0b', '#f43f5e', '#8b5cf6'],
+                    borderWidth: 2,
+                    borderColor: '#fff',
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { position: 'bottom', labels: { padding: 12, font: { size: 12 } } } }
+            }
+        });
+    } else if (productsCtx) {
+        productsCtx.parentElement.innerHTML = '<div class="h-full flex items-center justify-center text-gray-400">Pas encore de ventes à afficher</div>';
+    }
+});
+</script>
 {% endblock %}
