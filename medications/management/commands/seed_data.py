@@ -259,6 +259,7 @@ class Command(BaseCommand):
         sale1 = Sale.objects.create(
             customer=customers[0],
             payment_method='especes',
+            status='completee',
             amount_paid=12000,
             created_by=admin_user,
         )
@@ -282,6 +283,7 @@ class Command(BaseCommand):
         sale2 = Sale.objects.create(
             customer=customers[1],
             payment_method='carte',
+            status='completee',
             amount_paid=0,
             created_by=admin_user,
         )
@@ -305,6 +307,7 @@ class Command(BaseCommand):
         sale3 = Sale.objects.create(
             customer=None,
             payment_method='mobile_money',
+            status='completee',
             amount_paid=0,
             created_by=admin_user,
         )

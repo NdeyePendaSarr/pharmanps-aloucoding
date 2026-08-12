@@ -152,8 +152,16 @@ def medication_delete(request, pk):
     
     if request.method == 'POST':
         name = medication.name
-        medication.delete()
-        messages.success(request, f'Médicament "{name}" supprimé avec succès ! 🗑️')
+        try:
+            medication.delete()
+            messages.success(request, f'Médicament "{name}" supprimé avec succès ! 🗑️')
+        except ProtectedError:
+            # Le médicament est lié à des ventes : on protège l'historique.
+            messages.error(
+                request,
+                f'Impossible de supprimer "{name}" : il est rattaché à des ventes existantes. '
+                f'Vous pouvez le désactiver ou ajuster son stock à la place.'
+            )
         return redirect('medication_list')
     
     context = {
