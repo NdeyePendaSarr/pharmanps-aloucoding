@@ -19,4 +19,7 @@ python manage.py migrate
 echo "👤 Création du compte admin (si absent)..."
 python manage.py init_admin
 
+echo "🌱 Remplissage des données de démo (si base vide)..."
+python manage.py seed_data
+
 echo "✅ Build terminé avec succès!"
