@@ -174,6 +174,61 @@
         </div>
     </div>
 
+    <!-- Chiffre d'affaires par période -->
+    <div class="mb-8">
+        <h3 class="text-xl font-bold text-gray-900 mb-4">
+            <i class="fas fa-coins text-amber-500 mr-2"></i>
+            Chiffre d'affaires par période
+        </h3>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-5 text-white shadow-lg">
+                <p class="text-blue-100 text-sm font-medium">Aujourd'hui</p>
+                <p class="text-2xl font-extrabold mt-1">{{ ca_jour|floatformat:0 }} <span class="text-sm font-normal">FCFA</span></p>
+            </div>
+            <div class="bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-2xl p-5 text-white shadow-lg">
+                <p class="text-indigo-100 text-sm font-medium">Cette semaine</p>
+                <p class="text-2xl font-extrabold mt-1">{{ ca_semaine|floatformat:0 }} <span class="text-sm font-normal">FCFA</span></p>
+            </div>
+            <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl p-5 text-white shadow-lg">
+                <p class="text-purple-100 text-sm font-medium">Ce mois</p>
+                <p class="text-2xl font-extrabold mt-1">{{ ca_mois|floatformat:0 }} <span class="text-sm font-normal">FCFA</span></p>
+            </div>
+            <div class="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl p-5 text-white shadow-lg">
+                <p class="text-emerald-100 text-sm font-medium">Total général</p>
+                <p class="text-2xl font-extrabold mt-1">{{ ca_total|floatformat:0 }} <span class="text-sm font-normal">FCFA</span></p>
+            </div>
+        </div>
+
+        <!-- Récapitulatif jour par jour (7 derniers jours) -->
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-100">
+                <h4 class="font-bold text-gray-800"><i class="fas fa-calendar-week text-indigo-500 mr-2"></i>Détail des 7 derniers jours</h4>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead class="bg-gray-50 text-gray-600">
+                        <tr>
+                            <th class="text-left px-6 py-3 font-semibold">Date</th>
+                            <th class="text-center px-6 py-3 font-semibold">Nombre de ventes</th>
+                            <th class="text-right px-6 py-3 font-semibold">Montant</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        {% for jour in recap_jours %}
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="px-6 py-3 font-medium text-gray-800">{{ jour.date }}</td>
+                            <td class="px-6 py-3 text-center text-gray-600">{{ jour.nombre }}</td>
+                            <td class="px-6 py-3 text-right font-bold {% if jour.montant > 0 %}text-emerald-600{% else %}text-gray-400{% endif %}">
+                                {{ jour.montant|floatformat:0 }} FCFA
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         
         <div class="bg-white rounded-2xl shadow-xl p-6 border border-gray-100">

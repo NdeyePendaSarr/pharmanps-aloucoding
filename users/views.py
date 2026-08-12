@@ -85,7 +85,7 @@ def dashboard_view(request):
     
     # Statistiques ventes (aujourd'hui)
     today = timezone.now().date()
-    today_sales = Sale.objects.filter(created_at__date=today)
+    today_sales = Sale.objects.filter(created_at__date=today, status='completee')
     total_sales_today = today_sales.aggregate(total=Sum('total'))['total'] or 0
     sales_count_today = today_sales.count()
     
@@ -119,6 +119,31 @@ def dashboard_view(request):
     labels_produits = [t['medication__name'] for t in top_items]
     donnees_produits = [int(t['qte']) for t in top_items]
 
+    # --- Cumuls du chiffre d'affaires par période (ventes complétées) ---
+    from datetime import timedelta as _td
+    ventes_ok = Sale.objects.filter(status='completee')
+
+    debut_semaine = today - _td(days=today.weekday())   # lundi de cette semaine
+    debut_mois = today.replace(day=1)
+
+    ca_jour = ventes_ok.filter(created_at__date=today).aggregate(t=Sum('total'))['t'] or 0
+    ca_semaine = ventes_ok.filter(created_at__date__gte=debut_semaine).aggregate(t=Sum('total'))['t'] or 0
+    ca_mois = ventes_ok.filter(created_at__date__gte=debut_mois).aggregate(t=Sum('total'))['t'] or 0
+    ca_total = ventes_ok.aggregate(t=Sum('total'))['t'] or 0
+
+    # Détail jour par jour des 7 derniers jours (pour le tableau récapitulatif)
+    recap_jours = []
+    for i in range(6, -1, -1):
+        jour = today - _td(days=i)
+        montant = ventes_ok.filter(created_at__date=jour).aggregate(t=Sum('total'))['t'] or 0
+        nb = ventes_ok.filter(created_at__date=jour).count()
+        recap_jours.append({
+            'date': jour.strftime('%d/%m/%Y'),
+            'montant': float(montant),
+            'nombre': nb,
+        })
+    recap_jours.reverse()  # plus récent en premier
+
     context = {
         'total_medications': total_medications,
         'total_sales': sales_count_today,
@@ -130,5 +155,11 @@ def dashboard_view(request):
         'chart_sales_data': json.dumps(donnees_ventes),
         'chart_products_labels': json.dumps(labels_produits),
         'chart_products_data': json.dumps(donnees_produits),
+        # cumuls par période
+        'ca_jour': ca_jour,
+        'ca_semaine': ca_semaine,
+        'ca_mois': ca_mois,
+        'ca_total': ca_total,
+        'recap_jours': recap_jours,
     }
     return render(request, 'users/dashboard.html', context)
