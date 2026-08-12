@@ -112,8 +112,8 @@
         {% for med in medications %}
         <div class="group bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden border border-gray-100">
             <div class="relative h-48 overflow-hidden">
-                {% if med.image %}
-                <img src="{{ med.image.url }}" alt="{{ med.name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                {% if med.image_display %}
+                <img src="{{ med.image_display }}" alt="{{ med.name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
                 {% else %}
                 <div class="w-full h-full bg-gradient-to-br 
                     {% if med.category.name == 'Anti-asthmatiques' %}from-red-100 to-pink-200

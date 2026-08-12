@@ -104,6 +104,33 @@ class Medication(models.Model):
         return 0
     
     @property
+    def image_display(self):
+        """
+        URL de l'image à afficher :
+        1. l'image Cloudinary si l'utilisateur en a uploadé une
+        2. sinon une image statique locale nommée d'après le médicament
+        3. sinon None (le template affiche alors un joli fallback coloré)
+        """
+        # 1. Image Cloudinary uploadée
+        if self.image:
+            try:
+                return self.image.url
+            except Exception:
+                pass
+        # 2. Image statique locale (slug = nom en minuscules, sans accents/espaces)
+        import unicodedata
+        from django.templatetags.static import static
+        from django.contrib.staticfiles import finders
+        slug = unicodedata.normalize('NFKD', self.name.lower())
+        slug = slug.encode('ascii', 'ignore').decode('ascii')
+        slug = slug.strip().replace(' ', '-')
+        rel_path = f"images/medicaments/{slug}.jpg"
+        if finders.find(rel_path):
+            return static(rel_path)
+        # 3. Rien -> fallback template
+        return None
+
+    @property
     def stock_value(self):
         """Calcule la valeur totale du stock"""
         return self.quantity * self.purchase_price
