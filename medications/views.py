@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.db.models import Q
+from django.db.models import Q, ProtectedError
 from .models import Medication, Category, StockMovement
 from django.db.models import Sum # Non utilisé ici mais bonne pratique de l'avoir si besoin d'agrégation
 
