@@ -3,6 +3,8 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
 from django.db.models import Sum, F
 from django.utils import timezone
 
@@ -50,6 +52,14 @@ def register_view(request):
         
         if User.objects.filter(email=email).exists():
             messages.error(request, 'Cet email est déjà utilisé.')
+            return render(request, 'users/register.html')
+        
+        # Vérifier le mot de passe selon les règles définies dans AUTH_PASSWORD_VALIDATORS
+        try:
+            validate_password(password)
+        except ValidationError as e:
+            for error in e.messages:
+                messages.error(request, error)
             return render(request, 'users/register.html')
         
         # Créer l'utilisateur
