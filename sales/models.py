@@ -147,10 +147,9 @@ class SaleItem(models.Model):
         
         # Mettre à jour le stock du médicament (si nouvelle ligne)
         if not self.pk:
-            self.medication.quantity -= self.quantity
-            self.medication.save()
-            
-            # Créer un mouvement de stock
+            # StockMovement.save() décrémente déjà medication.quantity pour un
+            # mouvement de type 'sortie' : on ne le fait PAS ici aussi, sinon
+            # le stock est décrémenté deux fois pour une même vente.
             from medications.models import StockMovement
             StockMovement.objects.create(
                 medication=self.medication,
