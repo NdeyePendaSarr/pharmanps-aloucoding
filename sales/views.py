@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import JsonResponse
+from django.db import transaction
 from django.db.models import Q, Sum
 from .models import Sale, SaleItem, Customer
 from medications.models import Medication
@@ -44,7 +45,7 @@ def search_medication(request):
                 'dci': med.dci,
                 'price': float(med.selling_price),
                 'quantity': med.quantity,
-                'image': med.image.url if med.image else None,
+                'image': med.image_display,
             })
         
         return JsonResponse({'results': results})
@@ -58,46 +59,93 @@ def create_sale(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-            
-            # Créer la vente
-            sale = Sale.objects.create(
-                customer_id=data.get('customer_id') if data.get('customer_id') else None,
-                subtotal=data.get('subtotal', 0),
-                discount_percentage=data.get('discount_percentage', 0),
-                payment_method=data.get('payment_method'),
-                amount_paid=data.get('amount_paid', 0),
-                created_by=request.user,
-                # Statut forcé à 'completee' lors de la finalisation
-                status='completee',
-            )
-            
-            # Créer les lignes de vente
-            for item in data.get('items', []):
-                medication = Medication.objects.get(id=item['medication_id'])
-                SaleItem.objects.create(
-                    sale=sale,
-                    medication=medication,
-                    quantity=item['quantity'],
-                    unit_price=item['unit_price'],
+            items_data = data.get('items', [])
+
+            if not items_data:
+                return JsonResponse({
+                    'success': False,
+                    'message': "Le panier est vide."
+                }, status=400)
+
+            with transaction.atomic():
+                # 1) Regrouper les quantités demandées par médicament (au cas où
+                #    le même produit apparaîtrait deux fois dans le panier), afin
+                #    de valider le stock disponible de façon cumulative.
+                requested_quantities = {}
+                for item in items_data:
+                    try:
+                        qty = int(item['quantity'])
+                    except (TypeError, ValueError):
+                        raise ValueError("Quantité invalide dans le panier.")
+                    if qty <= 0:
+                        raise ValueError("Quantité invalide dans le panier.")
+                    med_id = item['medication_id']
+                    requested_quantities[med_id] = requested_quantities.get(med_id, 0) + qty
+
+                # 2) Verrouiller chaque médicament concerné et valider le stock
+                #    AVANT toute écriture, pour éviter la survente et les
+                #    conditions de course entre deux ventes simultanées.
+                medications_cache = {}
+                for med_id, total_qty in requested_quantities.items():
+                    medication = Medication.objects.select_for_update().get(id=med_id)
+                    if total_qty > medication.quantity:
+                        raise ValueError(
+                            f'Stock insuffisant pour "{medication.name}" '
+                            f'(disponible : {medication.quantity}, demandé : {total_qty}).'
+                        )
+                    medications_cache[str(med_id)] = medication
+
+                # 3) Créer la vente
+                sale = Sale.objects.create(
+                    customer_id=data.get('customer_id') if data.get('customer_id') else None,
+                    subtotal=data.get('subtotal', 0),
+                    discount_percentage=data.get('discount_percentage', 0),
+                    payment_method=data.get('payment_method'),
+                    amount_paid=data.get('amount_paid', 0),
+                    created_by=request.user,
+                    # Statut forcé à 'completee' lors de la finalisation
+                    status='completee',
                 )
-            
-            # Mettre à jour le sous-total
-            sale.subtotal = sum(item.subtotal for item in sale.items.all())
-            sale.save()
-            
+
+                # 4) Créer les lignes de vente (le stock est décrémenté dans StockMovement.save())
+                for item in items_data:
+                    medication = medications_cache[str(item['medication_id'])]
+                    SaleItem.objects.create(
+                        sale=sale,
+                        medication=medication,
+                        quantity=int(item['quantity']),
+                        unit_price=item['unit_price'],
+                    )
+
+                # 5) Mettre à jour le sous-total
+                sale.subtotal = sum(item.subtotal for item in sale.items.all())
+                sale.save()
+
             return JsonResponse({
                 'success': True,
                 'sale_id': sale.id,
                 'sale_number': sale.sale_number,
                 'message': f'Vente #{sale.sale_number} créée avec succès !'
             })
-        
+
+        except Medication.DoesNotExist:
+            return JsonResponse({
+                'success': False,
+                'message': "Un médicament du panier est introuvable."
+            }, status=400)
+
+        except ValueError as e:
+            return JsonResponse({
+                'success': False,
+                'message': str(e)
+            }, status=400)
+
         except Exception as e:
             return JsonResponse({
                 'success': False,
                 'message': str(e)
             }, status=400)
-    
+
     return JsonResponse({'success': False}, status=400)
 
 
