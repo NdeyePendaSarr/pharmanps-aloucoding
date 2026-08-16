@@ -117,3 +117,8 @@ Le code a été relu de bout en bout (modèles, vues, templates, settings) et pl
 - Filtrer le stock (faible/périmé/bientôt périmé) directement via l'ORM plutôt qu'en Python
 - Regrouper ou nettoyer les scripts de maintenance à la racine (`populate_db.py`, `check_duplicates.py`, `compare_stats.py`, `fix_encoding.py`)
 - Ajouter des tests automatisés sur la logique de stock/vente
+
+
+---
+
+Conçu et développé par **Ndeye Penda Sarr** - 2025.
